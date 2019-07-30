@@ -18,6 +18,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -27,12 +28,15 @@ import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
 
 import AdminLayout from "layouts/Admin.jsx";
+import Firebase, {FirebaseContext} from './components/Firebase';
 
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      <Route path="/admin" render={props => <AdminLayout {...props} />} />
-      <Redirect from="/" to="/admin/dashboard" />
+        <FirebaseContext.Provider value={new Firebase()}>
+          <Route path="/admin" render={props => <AdminLayout {...props} />} />
+        </FirebaseContext.Provider>
+        <Redirect from="/" to="/admin/dashboard" />
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")

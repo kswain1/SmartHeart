@@ -64,8 +64,8 @@ class Admin extends Component {
       title: <span data-notify="icon" className="pe-7s-gift" />,
       message: (
         <div>
-          Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for
-          every web developer.
+          Welcome to <b>Smart Heart App</b> - a beautiful innovation for
+          every wellness coach.
         </div>
       ),
       level: level,
@@ -146,8 +146,8 @@ class Admin extends Component {
       title: <span data-notify="icon" className="pe-7s-gift" />,
       message: (
         <div>
-          Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for
-          every web developer.
+          Welcome to <b>Smart Heart App</b> - a beautiful innovation for
+          every wellness coach.
         </div>
       ),
       level: level,

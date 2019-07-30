@@ -29,10 +29,25 @@ import { Card } from "components/Card/Card.jsx";
 import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
+import {withFirebase} from '../components/Firebase';
 
 import avatar from "assets/img/faces/face-3.jpg";
 
 class UserProfile extends Component {
+  handleSubmit = e => {
+    e.preventDefault();
+    console.log('firebae instanceee', this.props.firebase);
+
+
+    this.props.firebase.enrollmentForms().add({
+      'name': 'testing',
+      'email': 'test@test.com'
+    }).then(res => {
+      console.log('res from add', res);
+    })
+
+  }
+
   render() {
     return (
       <div className="content">
@@ -42,17 +57,17 @@ class UserProfile extends Component {
               <Card
                 title="Edit Profile"
                 content={
-                  <form>
+                  <form onSubmit={this.handleSubmit}>
                     <FormInputs
                       ncols={["col-md-5", "col-md-3", "col-md-4"]}
                       properties={[
                         {
-                          label: "Company (disabled)",
+                          label: "Company",
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Company",
                           defaultValue: "Creative Code Inc.",
-                          disabled: true
+                          disabled: false
                         },
                         {
                           label: "Username",
@@ -95,7 +110,7 @@ class UserProfile extends Component {
                           label: "Adress",
                           type: "text",
                           bsClass: "form-control",
-                          placeholder: "Home Adress",
+                          placeholder: "Home Address",
                           defaultValue:
                             "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
                         }
@@ -105,24 +120,24 @@ class UserProfile extends Component {
                       ncols={["col-md-4", "col-md-4", "col-md-4"]}
                       properties={[
                         {
-                          label: "City",
+                          label: "Physical Activity",
                           type: "text",
                           bsClass: "form-control",
-                          placeholder: "City",
-                          defaultValue: "Mike"
+                          placeholder: "Physical Activity",
+                          defaultValue: ""
                         },
                         {
-                          label: "Country",
+                          label: "Date of Birth",
                           type: "text",
                           bsClass: "form-control",
-                          placeholder: "Country",
-                          defaultValue: "Andrew"
+                          placeholder: "Date of Birth",
+                          defaultValue: ""
                         },
                         {
-                          label: "Postal Code",
+                          label: "Weight",
                           type: "number",
                           bsClass: "form-control",
-                          placeholder: "ZIP Code"
+                          placeholder: "175"
                         }
                       ]}
                     />
@@ -149,36 +164,36 @@ class UserProfile extends Component {
                 }
               />
             </Col>
-            <Col md={4}>
-              <UserCard
-                bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"
-                avatar={avatar}
-                name="Mike Andrew"
-                userName="michael24"
-                description={
-                  <span>
-                    "Lamborghini Mercy
-                    <br />
-                    Your chick she so thirsty
-                    <br />
-                    I'm in that two seat Lambo"
-                  </span>
-                }
-                socials={
-                  <div>
-                    <Button simple>
-                      <i className="fa fa-facebook-square" />
-                    </Button>
-                    <Button simple>
-                      <i className="fa fa-twitter" />
-                    </Button>
-                    <Button simple>
-                      <i className="fa fa-google-plus-square" />
-                    </Button>
-                  </div>
-                }
-              />
-            </Col>
+            {/*<Col md={4}>*/}
+            {/*  <UserCard*/}
+            {/*    bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"*/}
+            {/*    avatar={avatar}*/}
+            {/*    name="Mike Andrew"*/}
+            {/*    userName="michael24"*/}
+            {/*    description={*/}
+            {/*      <span>*/}
+            {/*        "Lamborghini Mercy*/}
+            {/*        <br />*/}
+            {/*        Your chick she so thirsty*/}
+            {/*        <br />*/}
+            {/*        I'm in that two seat Lambo"*/}
+            {/*      </span>*/}
+            {/*    }*/}
+            {/*    socials={*/}
+            {/*      <div>*/}
+            {/*        <Button simple>*/}
+            {/*          <i className="fa fa-facebook-square" />*/}
+            {/*        </Button>*/}
+            {/*        <Button simple>*/}
+            {/*          <i className="fa fa-twitter" />*/}
+            {/*        </Button>*/}
+            {/*        <Button simple>*/}
+            {/*          <i className="fa fa-google-plus-square" />*/}
+            {/*        </Button>*/}
+            {/*      </div>*/}
+            {/*    }*/}
+            {/*  />*/}
+            {/*</Col>*/}
           </Row>
         </Grid>
       </div>
@@ -186,4 +201,4 @@ class UserProfile extends Component {
   }
 }
 
-export default UserProfile;
+export default withFirebase(UserProfile);

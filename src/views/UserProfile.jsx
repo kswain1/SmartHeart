@@ -22,7 +22,8 @@ import {
   Col,
   FormGroup,
   ControlLabel,
-  FormControl
+  FormControl,
+  Form
 } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
@@ -35,17 +36,18 @@ import avatar from "assets/img/faces/face-3.jpg";
 
 class UserProfile extends Component {
   handleSubmit = e => {
-    e.preventDefault();
-    console.log('firebae instanceee', this.props.firebase);
+    //e.persist();
+    console.log('Firebase instanceee', e);
 
-
+/*
     this.props.firebase.enrollmentForms().add({
       'name': 'testing',
       'email': 'test@test.com'
     }).then(res => {
       console.log('res from add', res);
     });
-    this.setState({company: e.target.value});
+    */
+    //this.setState({company: e.target.value});
   };
 
   render() {
@@ -53,11 +55,11 @@ class UserProfile extends Component {
       <div className="content">
         <Grid fluid>
           <Row>
-            <Col md={8}>
+            <Col md={12}>
               <Card
                 title="Edit Profile"
                 content={
-                  <form onSubmit={this.handleSubmit}>
+                  <Form onSubmit={e => this.handleSubmit(e)} noValidate>
                     <FormInputs
                       ncols={["col-md-5", "col-md-3", "col-md-4"]}
                       properties={[
@@ -161,7 +163,7 @@ class UserProfile extends Component {
                       Update Profile
                     </Button>
                     <div className="clearfix" />
-                  </form>
+                  </Form>
                 }
               />
             </Col>

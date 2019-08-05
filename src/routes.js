@@ -24,6 +24,7 @@ import Maps from "views/Maps.jsx";
 import Notifications from "views/Notifications.jsx";
 import BiomechanicsForm from "views/BiomechanicsForm.jsx";
 import Upgrade from "views/Upgrade.jsx";
+import SignIn from "components/auth/SignIn.js"
 
 const dashboardRoutes = [
   {
@@ -74,6 +75,15 @@ const dashboardRoutes = [
     icon: "pe-7s-bell",
     component: Notifications,
     layout: "/admin"
+  },
+
+  {
+    path: "/signin",
+    name: "SignIn",
+    icon: "pe-7s-user",
+    component: SignIn,
+    layout: "/admin"
+
   },
   // {
   //   upgrade: true,

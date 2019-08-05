@@ -29,7 +29,7 @@ class TableList extends Component {
           <Row>
             <Col md={12}>
               <Card
-                title="Cohort 1 Smart Heart DESU"
+                title="Cohort 1 Heart Smart DESU"
                 category="Improving Heart Health Day by Day"
                 ctTableFullWidth
                 ctTableResponsive

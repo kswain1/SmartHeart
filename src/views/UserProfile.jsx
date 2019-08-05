@@ -44,9 +44,9 @@ class UserProfile extends Component {
       'email': 'test@test.com'
     }).then(res => {
       console.log('res from add', res);
-    })
-
-  }
+    });
+    this.setState({company: e.target.value});
+  };
 
   render() {
     return (
@@ -67,7 +67,8 @@ class UserProfile extends Component {
                           bsClass: "form-control",
                           placeholder: "Company",
                           defaultValue: "Creative Code Inc.",
-                          disabled: false
+                          disabled: false,
+                          name: 'company',
                         },
                         {
                           label: "Username",

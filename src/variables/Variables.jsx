@@ -513,14 +513,12 @@ var dataSales = {
     "Week9"
   ],
   series: [
-    [80, 85, 90, 92, 74, 80, 82, 85],
-    [70, 80, 85, 88, 96, 99, 95, 97],
-    [155, 175, 189, 178, 190, 185, 187, 184]
+    [5, 6, 3, 1, 9, 8, 9, 7],
   ]
 };
 var optionsSales = {
   low: 0,
-  high: 200,
+  high: 10,
   showArea: false,
   height: "245px",
   axisX: {
@@ -547,8 +545,8 @@ var responsiveSales = [
   ]
 ];
 var legendSales = {
-  names: ["Blood Pressure", "Empowerment", "Weight"],
-  types: ["info", "danger", "warning"]
+  names: ["Heart Smart Scale"],
+  types: ["info",]
 };
 
 //Data for physical Activity

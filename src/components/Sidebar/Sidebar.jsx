@@ -57,7 +57,7 @@ class Sidebar extends Component {
           )}
         <div className="logo">
           <a
-            href="https://www.creative-tim.com?ref=lbd-sidebar"
+            href="https://xplosionlive.com"
             className="simple-text logo-mini"
           >
             <div className="logo-img">
@@ -65,10 +65,10 @@ class Sidebar extends Component {
             </div>
           </a>
           <a
-            href="https://www.creative-tim.com?ref=lbd-sidebar"
+            href="https://xplosionlive.com"
             className="simple-text logo-normal"
           >
-            Smart Heart Women DESU
+            Heart Smart Women DESU
           </a>
         </div>
         <div className="sidebar-wrapper">

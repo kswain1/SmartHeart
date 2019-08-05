@@ -64,7 +64,7 @@ class Admin extends Component {
       title: <span data-notify="icon" className="pe-7s-gift" />,
       message: (
         <div>
-          Welcome to <b>Smart Heart App</b> - a beautiful innovation for
+          Welcome to <b>Heart Smart App</b> - a beautiful innovation for
           every wellness coach.
         </div>
       ),
@@ -146,7 +146,7 @@ class Admin extends Component {
       title: <span data-notify="icon" className="pe-7s-gift" />,
       message: (
         <div>
-          Welcome to <b>Smart Heart App</b> - a beautiful innovation for
+          Welcome to <b>Heart Smart App</b> - a beautiful innovation for
           every wellness coach.
         </div>
       ),

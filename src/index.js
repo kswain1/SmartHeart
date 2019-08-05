@@ -33,9 +33,9 @@ import Firebase, {FirebaseContext} from './components/Firebase';
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-        <FirebaseContext.Provider value={new Firebase()}>
+        {/*<FirebaseContext.Provider value={new Firebase()}>*/}
           <Route path="/admin" render={props => <AdminLayout {...props} />} />
-        </FirebaseContext.Provider>
+        {/*</FirebaseContext.Provider>*/}
         <Redirect from="/" to="/admin/dashboard" />
     </Switch>
   </BrowserRouter>,

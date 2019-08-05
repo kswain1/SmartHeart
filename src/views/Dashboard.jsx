@@ -85,7 +85,7 @@ class Dashboard extends Component {
             <Col lg={3} sm={6}>
               <StatsCard
                 bigIcon={<i className="fa fa-heartbeat text-danger" />}
-                statsText="Blood Pressure"
+                statsText="Blood Pressue"
                 statsValue="150"
                 statsIcon={<i className="fa fa-refresh" />}
                 statsIconText="Updated now"
@@ -97,8 +97,8 @@ class Dashboard extends Component {
               <Card
                 statsIcon="fa fa-history"
                 id="chartHours"
-                title="Blood Pressure Vs Time"
-                category="3 week performance"
+                title="Heart Smart Risk Scale"
+                category="12 week cohort performance"
                 stats="Updated 3 minutes ago"
                 content={
                   <div className="ct-chart">

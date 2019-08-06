@@ -82,7 +82,7 @@ const dashboardRoutes = [
     name: "SignIn",
     icon: "pe-7s-user",
     component: SignIn,
-    layout: "/admin"
+    layout: "/"
 
   },
   // {

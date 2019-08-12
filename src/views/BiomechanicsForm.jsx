@@ -17,173 +17,169 @@
 */
 import React, { Component } from "react";
 import {
-    Grid,
-    Row,
-    Col,
-    FormGroup,
-    ControlLabel,
-    FormControl
+  Grid,
+  Row,
+  Col,
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  Form
 } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
 import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
+import {withFirebase} from '../components/Firebase';
 
 import avatar from "assets/img/faces/face-3.jpg";
 
 class BiomechanicsForm extends Component {
-    render() {
-        return (
-            <div className="content">
-                <Grid fluid>
-                    <Row>
-                        <Col md={12}>
-                            <Card
-                                title="Edit Profile"
-                                content={
-                                    <form>
-                                        <FormInputs
-                                            ncols={["col-md-5", "col-md-3", "col-md-4"]}
-                                            properties={[
-                                                {
-                                                    label: "Company",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Company",
-                                                    defaultValue: "Creative Code Inc.",
-                                                    disabled: false
-                                                },
-                                                {
-                                                    label: "Username",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Username",
-                                                    defaultValue: "michael23"
-                                                },
-                                                {
-                                                    label: "Email address",
-                                                    type: "email",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Email"
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={["col-md-6", "col-md-6"]}
-                                            properties={[
-                                                {
-                                                    label: "First name",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "First name",
-                                                    defaultValue: "Mike"
-                                                },
-                                                {
-                                                    label: "Last name",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Last name",
-                                                    defaultValue: "Andrew"
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={["col-md-12"]}
-                                            properties={[
-                                                {
-                                                    label: "Adress",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Home Adress",
-                                                    defaultValue:
-                                                        "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={["col-md-4", "col-md-4", "col-md-4"]}
-                                            properties={[
-                                                {
-                                                    label: "Physical Activity",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Physical Activity",
-                                                    defaultValue: ""
-                                                },
-                                                {
-                                                    label: "Date of Birth",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Date of Birth",
-                                                    defaultValue: ""
-                                                },
-                                                {
-                                                    label: "Weight",
-                                                    type: "number",
-                                                    bsClass: "form-control",
-                                                    placeholder: "175"
-                                                }
-                                            ]}
-                                        />
+  state = {
+    name: '',
+    cholesterol: '',
+    physicalActivity: '',
+    bmi: '',
+    weight: '',
+    heartRate: '',
+  }
 
-                                        <Row>
-                                            <Col md={12}>
-                                                <FormGroup controlId="formControlsTextarea">
-                                                    <ControlLabel>About Me</ControlLabel>
-                                                    <FormControl
-                                                        rows="5"
-                                                        componentClass="textarea"
-                                                        bsClass="form-control"
-                                                        placeholder="Here can be your description"
-                                                        defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-                                                    />
-                                                </FormGroup>
-                                            </Col>
-                                        </Row>
-                                        <Button bsStyle="info" pullRight fill type="submit">
-                                            Update Profile
-                                        </Button>
-                                        <div className="clearfix" />
-                                    </form>
-                                }
-                            />
-                        </Col>
-                        {/*<Col md={4}>*/}
-                        {/*  <UserCard*/}
-                        {/*    bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"*/}
-                        {/*    avatar={avatar}*/}
-                        {/*    name="Mike Andrew"*/}
-                        {/*    userName="michael24"*/}
-                        {/*    description={*/}
-                        {/*      <span>*/}
-                        {/*        "Lamborghini Mercy*/}
-                        {/*        <br />*/}
-                        {/*        Your chick she so thirsty*/}
-                        {/*        <br />*/}
-                        {/*        I'm in that two seat Lambo"*/}
-                        {/*      </span>*/}
-                        {/*    }*/}
-                        {/*    socials={*/}
-                        {/*      <div>*/}
-                        {/*        <Button simple>*/}
-                        {/*          <i className="fa fa-facebook-square" />*/}
-                        {/*        </Button>*/}
-                        {/*        <Button simple>*/}
-                        {/*          <i className="fa fa-twitter" />*/}
-                        {/*        </Button>*/}
-                        {/*        <Button simple>*/}
-                        {/*          <i className="fa fa-google-plus-square" />*/}
-                        {/*        </Button>*/}
-                        {/*      </div>*/}
-                        {/*    }*/}
-                        {/*  />*/}
-                        {/*</Col>*/}
-                    </Row>
-                </Grid>
-            </div>
-        );
-    }
+  handleSubmit = e => {
+    e.preventDefault();
+    console.log('Firebase instanceee', this.state);
+
+
+    this.props.firebase.weeklyIntake().add(this.state).then(res => {
+      console.log('res from add', res);
+    });
+
+    //this.setState({company: e.target.value});
+  };
+
+  handleChange = e => {
+    console.log('ee target', e.target.name, 'valll', e.target.value);
+    this.setState({[e.target.name]: e.target.value})
+  }
+
+  render() {
+    const {name, cholesterol, physicalActivity, bmi, weight, heartRate} = this.state;
+    return (
+      <div className="content">
+        <Grid fluid>
+          <Row>
+            <Col md={12}>
+              <Card
+                title="Biomechanics Form"
+                content={
+                  <form onSubmit={this.handleSubmit} >
+                    <FormInputs
+                      ncols={["col-md-4", "col-md-4", "col-md-4"]}
+                      properties={[
+                        {
+                          label: "name",
+                          type: "text",
+                          bsClass: "form-control",
+                          placeholder: "Company",
+                          value: name,
+                          disabled: false,
+                          name: 'name',
+                          onChange: this.handleChange
+                        },
+                        {
+                          label: "Cholesterol",
+                          type: "number",
+                          bsClass: "form-control",
+                          placeholder: "",
+                          value: cholesterol,
+                          name: 'cholesterol',
+                          onChange: this.handleChange
+                        },
+                        {
+                          label: "BMI",
+                          type: "number",
+                          bsClass: "form-control",
+                          placeholder: "",
+                          name: 'bmi',
+                          value: bmi,
+                          onChange: this.handleChange
+                        }
+                      ]}
+                    />
+                    <FormInputs
+                      ncols={["col-md-4", "col-md-4", "col-md-4"]}
+                      properties={[
+                        {
+                          label: "Physical Activity",
+                          type: "text",
+                          bsClass: "form-control",
+                          placeholder: "Physical Activity",
+                          value: physicalActivity,
+                          name: 'physicalActivity',
+                          onChange: this.handleChange
+                        },
+                        {
+                          label: "Weight",
+                          type: "number",
+                          bsClass: "form-control",
+                          placeholder: "Weight",
+                          value: weight,
+                          name: 'weight',
+                          onChange: this.handleChange
+                        },
+                        {
+                          label: "Heart Rate",
+                          type: "number",
+                          bsClass: "form-control",
+                          placeholder: "175",
+                          name: 'heartRate',
+                          value: heartRate,
+                          onChange: this.handleChange
+                        }
+                      ]}
+                    />
+                    <Button bsStyle="info" pullRight fill type="submit">
+                      Heart Health Submission
+                    </Button>
+                    <div className="clearfix" />
+                  </form>
+                }
+              />
+            </Col>
+            {/*<Col md={4}>*/}
+            {/*  <UserCard*/}
+            {/*    bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"*/}
+            {/*    avatar={avatar}*/}
+            {/*    name="Mike Andrew"*/}
+            {/*    userName="michael24"*/}
+            {/*    description={*/}
+            {/*      <span>*/}
+            {/*        "Lamborghini Mercy*/}
+            {/*        <br />*/}
+            {/*        Your chick she so thirsty*/}
+            {/*        <br />*/}
+            {/*        I'm in that two seat Lambo"*/}
+            {/*      </span>*/}
+            {/*    }*/}
+            {/*    socials={*/}
+            {/*      <div>*/}
+            {/*        <Button simple>*/}
+            {/*          <i className="fa fa-facebook-square" />*/}
+            {/*        </Button>*/}
+            {/*        <Button simple>*/}
+            {/*          <i className="fa fa-twitter" />*/}
+            {/*        </Button>*/}
+            {/*        <Button simple>*/}
+            {/*          <i className="fa fa-google-plus-square" />*/}
+            {/*        </Button>*/}
+            {/*      </div>*/}
+            {/*    }*/}
+            {/*  />*/}
+            {/*</Col>*/}
+          </Row>
+        </Grid>
+      </div>
+    );
+  }
 }
 
-export default BiomechanicsForm;
+export default withFirebase(BiomechanicsForm);

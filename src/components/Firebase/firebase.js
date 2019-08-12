@@ -22,6 +22,7 @@ class Firebase {
     }
 
     enrollmentForms = () => this.db.collection(`enrollmentForm`);
+    weeklyIntake = () => this.db.collection('weeklyIntake');
 };
 
 export default Firebase;

@@ -28,7 +28,6 @@ import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
 
 import AdminLayout from "layouts/Admin.jsx";
-import GuestLayout from "layouts/Guest.jsx";
 import Firebase, {FirebaseContext} from './components/Firebase';
 
 ReactDOM.render(
@@ -36,7 +35,6 @@ ReactDOM.render(
     <Switch>
 
         <FirebaseContext.Provider value={new Firebase()}>
-          <Route path="/" render={props => <GuestLayout {...props} />} />
           <Route path="/admin" render={props => <AdminLayout {...props} />} />
         </FirebaseContext.Provider>
 

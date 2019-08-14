@@ -122,6 +122,9 @@ class Admin extends Component {
     }
   };
   componentDidMount() {
+    if (!localStorage.getItem('uid')) {
+      return this.props.history.push('/');
+    }
     this.setState({ _notificationSystem: this.refs.notificationSystem });
     var _notificationSystem = this.refs.notificationSystem;
     var color = Math.floor(Math.random() * 4 + 1);

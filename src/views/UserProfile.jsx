@@ -35,6 +35,7 @@ import {withFirebase} from '../components/Firebase';
 import avatar from "assets/img/faces/face-3.jpg";
 
 class UserProfile extends Component {
+  
   state = {
     company: '',
     username: '',

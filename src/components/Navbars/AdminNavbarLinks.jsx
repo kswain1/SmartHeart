@@ -69,7 +69,13 @@ class AdminNavbarLinks extends Component {
             <MenuItem divider />
             <MenuItem eventKey={2.5}>Separated link</MenuItem>
           </NavDropdown>
-          <NavItem eventKey={3} href="#">
+          <NavItem
+          onClick={() => {
+            localStorage.clear();
+            this.props.history.push('/');
+          }}
+          eventKey={3}
+          href="#">
             Log out
           </NavItem>
         </Nav>

@@ -32,6 +32,7 @@ import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
 import {withFirebase} from '../components/Firebase';
 
+
 import avatar from "assets/img/faces/face-3.jpg";
 
 class BiomechanicsForm extends Component {
@@ -46,14 +47,15 @@ class BiomechanicsForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    console.log('Firebase instanceee', this.state);
-
-
     this.props.firebase.weeklyIntake().add(this.state).then(res => {
       console.log('res from add', res);
-    });
-
-    //this.setState({company: e.target.value});
+      this.setState({    name: '',
+          cholesterol: '',
+          physicalActivity: '',
+          bmi: '',
+          weight: '',
+          heartRate: ''})
+    }).catch(err => console.log('err adding weekly intake', err));
   };
 
   handleChange = e => {

@@ -41,7 +41,18 @@ class BiomechanicsForm extends Component {
     physicalActivity: '',
     bmi: '',
     weight: '',
-    heartRate: '',
+    notes: '',
+    createdAt: new Date()
+  }
+
+  componentDidMount(){
+    this.findByDate();
+  }
+
+  findByDate(){
+    this.props.firebase.weeklyIntake().where('createdAt', '<=', new Date()).then(response => {
+      console.log(response);
+    })
   }
 
   handleSubmit = e => {
@@ -62,83 +73,90 @@ class BiomechanicsForm extends Component {
   }
 
   render() {
-    const {name, cholesterol, physicalActivity, bmi, weight, heartRate} = this.state;
+    const {name, cholesterol, physicalActivity, bmi, weight, heartRate, notes} = this.state;
     return (
       <div className="content">
         <Grid fluid>
           <Row>
             <Col md={12}>
               <Card
-                title="Biomechanics Form"
+                title="Edit Profile"
                 content={
                   <form onSubmit={this.handleSubmit} >
                     <FormInputs
-                      ncols={["col-md-4", "col-md-4", "col-md-4"]}
+                      ncols={["col-md-5", "col-md-3", "col-md-4"]}
                       properties={[
                         {
-                          label: "name",
+                          label: "Name",
                           type: "text",
                           bsClass: "form-control",
-                          placeholder: "Company",
+                          placeholder: "Name",
                           value: name,
                           disabled: false,
                           name: 'name',
                           onChange: this.handleChange
                         },
                         {
-                          label: "Cholesterol",
+                          label: "cholesterol",
                           type: "number",
                           bsClass: "form-control",
-                          placeholder: "",
+                          placeholder: "cholesterol",
                           value: cholesterol,
                           name: 'cholesterol',
                           onChange: this.handleChange
                         },
                         {
-                          label: "BMI",
+                          label: "physicalActivity",
                           type: "number",
                           bsClass: "form-control",
-                          placeholder: "",
-                          name: 'bmi',
-                          value: bmi,
+                          placeholder: "physicalActivity",
+                          name: 'physicalActivity',
+                          value: physicalActivity,
                           onChange: this.handleChange
                         }
                       ]}
                     />
                     <FormInputs
-                      ncols={["col-md-4", "col-md-4", "col-md-4"]}
+                      ncols={["col-md-6", "col-md-6"]}
                       properties={[
                         {
-                          label: "Physical Activity",
-                          type: "text",
+                          label: "bmi",
+                          type: "number",
                           bsClass: "form-control",
-                          placeholder: "Physical Activity",
-                          value: physicalActivity,
-                          name: 'physicalActivity',
+                          placeholder: "bmi",
+                          value: bmi,
+                          name: 'bmi',
                           onChange: this.handleChange
                         },
                         {
-                          label: "Weight",
+                          label: "weight",
                           type: "number",
                           bsClass: "form-control",
-                          placeholder: "Weight",
+                          placeholder: "weight",
                           value: weight,
                           name: 'weight',
-                          onChange: this.handleChange
-                        },
-                        {
-                          label: "Heart Rate",
-                          type: "number",
-                          bsClass: "form-control",
-                          placeholder: "175",
-                          name: 'heartRate',
-                          value: heartRate,
                           onChange: this.handleChange
                         }
                       ]}
                     />
+                    <Row>
+                      <Col md={12}>
+                        <FormGroup controlId="formControlsTextarea">
+                          <ControlLabel>Extra Notes</ControlLabel>
+                          <FormControl
+                            rows="5"
+                            componentClass="textarea"
+                            bsClass="form-control"
+                            placeholder="Here can be your description"
+                            value={notes}
+                            name='notes'
+                            onChange={this.handleChange}
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
                     <Button bsStyle="info" pullRight fill type="submit">
-                      Heart Health Submission
+                      Update Profile
                     </Button>
                     <div className="clearfix" />
                   </form>

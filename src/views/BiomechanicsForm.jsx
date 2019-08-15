@@ -46,13 +46,11 @@ class BiomechanicsForm extends Component {
   }
 
   componentDidMount(){
-    this.findByDate();
+    // this.findByDate();
   }
 
   findByDate(){
-    this.props.firebase.weeklyIntake().where('createdAt', '<=', new Date()).then(response => {
-      console.log(response);
-    })
+
   }
 
   handleSubmit = e => {

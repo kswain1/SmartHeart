@@ -25,7 +25,7 @@ import {
   FormControl,
   Form
 } from "react-bootstrap";
-
+import Autosuggest from 'react-bootstrap-autosuggest';
 import { Card } from "components/Card/Card.jsx";
 import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
@@ -43,28 +43,48 @@ class BiomechanicsForm extends Component {
     bmi: '',
     weight: '',
     heartRate: '',
+    users: []
+  }
+
+  componentDidMount(){
+    this.props.firebase.enrollmentForms().get().then( snapshot => {
+      const users = snapshot.docs.map(doc => {
+        const {firstName, lastName} = doc.data();
+        return `${firstName} ${lastName}`;
+      });
+      this.setState({users});
+    })
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.firebase.weeklyIntake().add(this.state).then(res => {
+    const {name, cholesterol, physicalActivity, bmi, weight, heartRate} = this.state;
+    this.props.firebase.weeklyIntake().add({
+      name,
+      cholesterol,
+      physicalActivity,
+      bmi,
+      weight,
+      heartRate
+    }).then(res => {
       console.log('res from add', res);
-      this.setState({    name: '',
+      this.setState({
+          name: '',
           cholesterol: '',
           physicalActivity: '',
           bmi: '',
           weight: '',
-          heartRate: ''})
+          heartRate: ''
+        })
     }).catch(err => console.log('err adding weekly intake', err));
   };
 
   handleChange = e => {
-    console.log('ee target', e.target.name, 'valll', e.target.value);
     this.setState({[e.target.name]: e.target.value})
   }
 
   render() {
-    const {name, cholesterol, physicalActivity, bmi, weight, heartRate} = this.state;
+    const {name, cholesterol, physicalActivity, bmi, weight, heartRate, users} = this.state;
     return (
       <div className="content">
         <Grid fluid>
@@ -74,19 +94,20 @@ class BiomechanicsForm extends Component {
                 title="Biomechanics Form"
                 content={
                   <form onSubmit={this.handleSubmit} >
+
+                  <FormGroup controlId="name" >
+                    <ControlLabel>Name</ControlLabel>
+                    <Autosuggest
+                      datalist={users}
+                      placeholder="Please select a User"
+                      value={name}
+                      onChange={name => this.setState({name})}
+                      />
+                  </FormGroup>
+
                     <FormInputs
-                      ncols={["col-md-4", "col-md-4", "col-md-4"]}
+                      ncols={["col-md-4", "col-md-4"]}
                       properties={[
-                        {
-                          label: "name",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Company",
-                          value: name,
-                          disabled: false,
-                          name: 'name',
-                          onChange: this.handleChange
-                        },
                         {
                           label: "Cholesterol",
                           type: "number",

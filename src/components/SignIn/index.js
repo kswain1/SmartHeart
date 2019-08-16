@@ -67,13 +67,13 @@ class SignInFormBase extends Component {
     return (
       <div className="container">
       <form onSubmit={this.onSubmit} className="form-signin" role="form">
-      <h2 className="form-signin-heading">Please Sign In</h2>
+      <h2 className="form-signin-heading">Heart Smart Sign In</h2>
       <div className="input-field">
         <input
           name="email"
           value={email}
           onChange={this.onChange}
-          type="text"
+          type="email"
           placeholder="Email Address"
           className="form-control"
         />

@@ -319,7 +319,6 @@ class BiomechanicsForm extends Component {
 		//summing up the variables
 		var sum = points.reduce((a, b) => a + b);
 		return sum;
-
 	}
 
 	handleSubmit = async (e) => {
@@ -344,7 +343,7 @@ class BiomechanicsForm extends Component {
 	};
 
 	handleChange = e => {
-		console.log('ee target', e.target.name, 'valll', e.target.value);
+		console.log('ee target', e.target.name, 'val', e.target.value);
 		this.setState({[e.target.name]: e.target.value})
 	}
 

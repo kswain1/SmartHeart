@@ -59,6 +59,7 @@ class Dashboard extends Component {
         heartSmartRisk: null,
         heartSmartRiskSeriesData: {},
         heartSmartRiskSeriesValues: [],
+        heartSmartValue: '',
     }
 
     componentDidMount() {
@@ -102,6 +103,7 @@ class Dashboard extends Component {
             this.createBMISeriesData();
             this.createWeightSeriesData();
             this.createHeartSmartSeriesData();
+            this.checkHeartRateScale();
 
           })
         }
@@ -195,11 +197,39 @@ class Dashboard extends Component {
       this.setState({ heartSmartRiskSeriesData, heartSmartRiskSeriesValues: values });
     }
 
+    checkHeartRateScale = () => {
+      var heartSmartValue = this.state;
+
+      const { heartSmartRisk} = this.state;
+      const values = heartSmartRisk && Object.values(heartSmartRisk);
+
+      var {total, highRisk, lowRisk, midRisk } = heartSmartRisk;
+      var highRiskPercent = this.ConvertToDecimal((highRisk/total) * 100);
+      var midRiskPercent = this.ConvertToDecimal((midRisk/total) * 100);
+      var lowRiskPercent = this.ConvertToDecimal((lowRisk/total) * 100);
+
+      if (highRiskPercent >= midRiskPercent || highRisk >= lowRiskPercent) {
+          console.log('High Risk')
+          heartSmartValue = 'High Risk'
+          this.setState({heartSmartValue})
+        }
+      else if (midRiskPercent >= lowRiskPercent || midRiskPercent > highRiskPercent) {
+          console.log('Mid Risk')
+          heartSmartValue = 'Mid Risk'
+          this.setState({heartSmartValue})
+        }
+      else {
+        heartSmartValue = 'Low Risk'
+        this.setState({heartSmartValue})
+      }
+
+    }
+
     render() {
         const { averageBMI, averageWeight, averageHeartRate, yearlyAverage,
            heartSeriesData, heartSeriesValues, currentyear, bmiSeriesData,
             bmiSeriesValues, weightSeriesData, weightSeriesValues ,
-            heartSmartRiskSeriesData, heartSmartRiskSeriesValues
+            heartSmartRiskSeriesData, heartSmartRiskSeriesValues, heartSmartValue
           } = this.state;
 
 
@@ -207,15 +237,18 @@ class Dashboard extends Component {
             <div className="content">
                 <Grid fluid>
                     <Row>
+                    {
+                      heartSmartRiskSeriesData && heartSmartRiskSeriesValues && heartSmartRiskSeriesValues.length > 0 &&
                       <Col lg={3} sm={6}>
                           <StatsCard
                               bigIcon={<i className="fa fa-heartbeat text-danger" />}
-                              statsText="Blood Pressure"
-                              statsValue={averageBMI}
+                              statsText="Heart Scale Rating"
+                              statsValue={heartSmartValue}
                               statsIcon={<i className="fa fa-refresh" />}
                               statsIconText="Updated now"
                           />
                       </Col>
+                    }
                         <Col lg={3} sm={6}>
                             <StatsCard
                                 bigIcon={<i className="pe-7s-like text-warning" />}

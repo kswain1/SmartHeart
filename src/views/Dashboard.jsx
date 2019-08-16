@@ -56,6 +56,9 @@ class Dashboard extends Component {
         bmiSeriesValues: [],
         weightSeriesData: {},
         weightSeriesValues: [],
+        heartSmartRisk: null,
+        heartSmartRiskSeriesData: {},
+        heartSmartRiskSeriesValues: [],
     }
 
     componentDidMount() {
@@ -73,6 +76,10 @@ class Dashboard extends Component {
         return legend;
     }
 
+    ConvertToDecimal = (value) => {
+      return parseFloat(Math.round(value * 100) / 100).toFixed(2);
+    }
+
     /**
      * Get summary data from weeklyIntake collection
      */
@@ -80,19 +87,21 @@ class Dashboard extends Component {
       const { currentyear } = this.state;
       this.props.firebase.weeklyIntakeSummary().get().then(summary => {
         if(summary && summary.id){
-          var { average, yearlyAverage } = summary.data();
+          var { average, yearlyAverage, heartSmartRisk } = summary.data();
           var currentYearData = yearlyAverage && yearlyAverage[currentyear];
           this.setState({
                 yearlyAverage: yearlyAverage,
                 currentYearData: currentYearData,
-                averageBMI: parseFloat(Math.round(average.bmi * 100) / 100).toFixed(2),
-                averageWeight: parseFloat(Math.round(average.weight * 100) / 100).toFixed(2),
-                averageHeartRate: parseFloat(Math.round(average.heartRate * 100) / 100).toFixed(2),
+                heartSmartRisk: heartSmartRisk,
+                averageBMI: this.ConvertToDecimal(average.bmi),
+                averageWeight: this.ConvertToDecimal(average.weight),
+                averageHeartRate: this.ConvertToDecimal(average.heartRate),
           }, () => {
             //computes data in form for graphs
             this.createHeartRateSeriesData();
             this.createBMISeriesData();
             this.createWeightSeriesData();
+            this.createHeartSmartSeriesData();
 
           })
         }
@@ -168,16 +177,45 @@ class Dashboard extends Component {
       this.setState({ weightSeriesData, weightSeriesValues })
     }
 
+    createHeartSmartSeriesData = () => {
+      const { heartSmartRisk } = this.state;
+      const labels = heartSmartRisk && Object.keys(heartSmartRisk);
+      const values = heartSmartRisk && Object.values(heartSmartRisk);
+
+      var { total, highRisk, lowRisk, midRisk } = heartSmartRisk;
+      var highRiskPercent = this.ConvertToDecimal( (highRisk / total) * 100 );
+      var midRiskPercent = this.ConvertToDecimal( (midRisk / total) * 100 );
+      var lowRiskPercent = this.ConvertToDecimal( (lowRisk / total) * 100 );
+      var heartSmartRiskSeriesData = {
+        labels: [`${lowRiskPercent}%`, `${midRiskPercent}%`, `${highRiskPercent}%`],
+        series: [lowRiskPercent, midRiskPercent, highRiskPercent]
+      };
+
+      console.log('hs series data', heartSmartRiskSeriesData);
+      this.setState({ heartSmartRiskSeriesData, heartSmartRiskSeriesValues: values });
+    }
+
     render() {
         const { averageBMI, averageWeight, averageHeartRate, yearlyAverage,
            heartSeriesData, heartSeriesValues, currentyear, bmiSeriesData,
-            bmiSeriesValues, weightSeriesData, weightSeriesValues } = this.state;
+            bmiSeriesValues, weightSeriesData, weightSeriesValues ,
+            heartSmartRiskSeriesData, heartSmartRiskSeriesValues
+          } = this.state;
 
 
         return (
             <div className="content">
                 <Grid fluid>
                     <Row>
+                      <Col lg={3} sm={6}>
+                          <StatsCard
+                              bigIcon={<i className="fa fa-heartbeat text-danger" />}
+                              statsText="Blood Pressure"
+                              statsValue={averageBMI}
+                              statsIcon={<i className="fa fa-refresh" />}
+                              statsIconText="Updated now"
+                          />
+                      </Col>
                         <Col lg={3} sm={6}>
                             <StatsCard
                                 bigIcon={<i className="pe-7s-like text-warning" />}
@@ -203,15 +241,6 @@ class Dashboard extends Component {
                                 statsValue={averageWeight}
                                 statsIcon={<i className="fa fa-clock-o" />}
                                 statsIconText="In the last hour"
-                            />
-                        </Col>
-                        <Col lg={3} sm={6}>
-                            <StatsCard
-                                bigIcon={<i className="fa fa-heartbeat text-danger" />}
-                                statsText="Blood Pressue"
-                                statsValue="150"
-                                statsIcon={<i className="fa fa-refresh" />}
-                                statsIconText="Updated now"
                             />
                         </Col>
                     </Row>
@@ -241,10 +270,13 @@ class Dashboard extends Component {
                             />
                           </Col>
                         }
-                        <Col md={4}>
+
+                        {
+                          heartSmartRiskSeriesData && heartSmartRiskSeriesValues && heartSmartRiskSeriesValues.length > 0 &&
+                          <Col md={4}>
                             <Card
                                 statsIcon="fa fa-clock-o"
-                                title="Cohort Phase Performance Average"
+                                title="Heart Smart Scale Chart"
                                 category="Last Phase Performance"
                                 stats="Phase sent 2 days ago"
                                 content={
@@ -252,7 +284,7 @@ class Dashboard extends Component {
                                     id="chartPreferences"
                                     className="ct-chart ct-perfect-fourth"
                                 >
-                                    <ChartistGraph data={dataPie} type="Pie" />
+                                    <ChartistGraph data={heartSmartRiskSeriesData} type="Pie" />
                                 </div>
                                 }
                                 legend={
@@ -260,6 +292,7 @@ class Dashboard extends Component {
                                 }
                             />
                         </Col>
+                      }
                     </Row>
 
                     <Row>

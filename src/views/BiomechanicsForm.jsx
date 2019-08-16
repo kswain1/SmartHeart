@@ -34,25 +34,31 @@ import {withFirebase} from '../components/Firebase';
 
 import avatar from "assets/img/faces/face-3.jpg";
 
+const initalState = {
+	name: '',
+	cholesterol: '',
+	physicalActivity: '',
+	bmi: '',
+	weight: '',
+	heartRate: '',
+	height: '',
+	bloodPressure: '',
+	smoking: '',
+	notes: '',
+	createdAt: moment().format(),
+	gait: '',
+	timeUpGo: '',
+	heartSmartScale: '',
+	heartSmartRisk: '',
+	diabetes: '',
+	waistCircumference: '',
+};
+
 class BiomechanicsForm extends Component {
 
 	constructor(props){
 		super(props);
-		this.state = {
-			name: '',
-			cholesterol: '',
-			physicalActivity: '',
-			bmi: '',
-			weight: '',
-			heartRate: '',
-			height: '',
-			bloodPressure: '',
-			smoking: '',
-			notes: '',
-			createdAt: moment().format(),
-			gait: '',
-			timeUpGo: '',
-		}
+		this.state = initalState;
 	}
 
 	componentDidMount(){
@@ -88,17 +94,26 @@ class BiomechanicsForm extends Component {
 			total: {
 				bmi: Number(0),
 				heartRate: Number(0),
-				weight: Number(0)
+				weight: Number(0),
+				heartSmartScale: Number(0)
 			},
 			average: {
 				bmi: Number(0),
 				heartRate: Number(0),
-				weight: Number(0)
+				weight: Number(0),
+				heartSmartScale: Number(0)
 			},
 			entryCount: {
 				bmi: Number(0),
 				heartRate: Number(0),
-				weight: Number(0)
+				weight: Number(0),
+				heartSmartScale: Number(0)
+			},
+			heartSmartRisk: {
+				total: Number(0),
+				lowRisk: Number(0),
+				midRisk: Number(0),
+				highRisk: Number(0),
 			},
 			yearlyAverage: {}
 		}).then(res => {
@@ -142,6 +157,13 @@ class BiomechanicsForm extends Component {
 								var HeartRate = Number(data.heartRate);
 								var Weight = Number(data.weight);
                 var dateCreated = data.createdAt;
+								var heartSmartRisk = data.heartSmartRisk;//lowRisk
+
+								//get count of heartSmartRisk
+								var heartSmartRiskData = res.data().heartSmartRisk;
+								var totalHeartSmartRiskData = heartSmartRiskData.total;
+								var newTotalHeartSmartRisk = totalHeartSmartRiskData + 1;
+								var newHeartSmartRisk = heartSmartRiskData[heartSmartRisk] + 1;
 
                 //get count of BMI entries
 								var entryCounts = res.data().entryCount;
@@ -184,7 +206,7 @@ class BiomechanicsForm extends Component {
 											bmi: 0,
 											heartRate: 0,
 											weight: 0
-										}
+										},
 								};
 
 				//update weekly count, weekly total, and weekly average for this week
@@ -223,7 +245,7 @@ class BiomechanicsForm extends Component {
 															bmi: newWeeklyBMITotal,
 															heartRate: newWeeklyHeartRateTotal,
 															weight: newWeeklyWeightTotal
-														}
+														},
                         }
                     }
                 }
@@ -245,6 +267,11 @@ class BiomechanicsForm extends Component {
 											heartRate: newHeartRateEntryCount,
 											weight: newWeightEntryCount
 										},
+										heartSmartRisk: {
+											...heartSmartRiskData,
+											total: newTotalHeartSmartRisk,
+											[`${heartSmartRisk}`]: newHeartSmartRisk
+										},
                     yearlyAverage: newYearlyAverage
 				});
 
@@ -254,13 +281,66 @@ class BiomechanicsForm extends Component {
         });
     }
 
+
+		// High blood pressure (2 pts.) bp >= 190 = 2 else x = 0
+          // • High cholesterol (2 pts.) cholesterol >= cholesterolHigh x = 2 else x = 0
+          // • Smoking (2 pts.) isSmoking:
+          //                   x  = 2 else: x = 0
+          // • Diabetes (1) diabete = diabetesHigh 150 x = 1 else x  0
+          // • BMI (1) if bmi >= bmiHigh {x = 1}
+          // • Waist Circumference (1) if waist >= waistHigh  x = 1 else x = 0
+          // • Physical Inactivity (1 or -1) if physicalAct >= physicalActHigh x = 1 if else physicalAct <= physicalActLow x = -1
+          //   else:
+          //     x = 0
+		//
+		// Less than 3 points = low risk
+		// Between 3-5 points = moderate risk
+		// 6+ points = high risk
+
+	generateHeartSmartRisk = (value) => {
+		if(value < 3) { return 'lowRisk' }
+		else if(value >=3 && value <=5) { return 'midRisk' }
+		else { return 'highRisk' }
+	}
+
+	generateHeartSmartScale = () => {
+		const { bloodPressure, cholesterol, smoking, diabetes, bmi, waistCircumference, physicalActivity } = this.state;
+
+		var points = [
+			(bloodPressure && bloodPressure >= 190) ? 2 : 0,
+			(cholesterol && cholesterol >= 200) ? 2 : 0,
+			(smoking == 1 || smoking == "1") ? 2 : 0,
+			(bmi && bmi >= 18.5) ? 1 : 0,
+			(waistCircumference && waistCircumference >= 36) ? 1 : 0,
+			(physicalActivity && physicalActivity >= 60) ? -1 : ((physicalActivity && physicalActivity <= 30) ? 1 : 0),
+			(diabetes == 1 || diabetes == "1") ? 1 : 0,
+		];
+
+		//summing up the variables
+		var sum = points.reduce((a, b) => a + b);
+		return sum;
+
+	}
+
 	handleSubmit = async (e) => {
 		e.preventDefault();
 		console.log('Firebase instanceee', this.state);
 
-		//submit form data to firestore and update summary
-		const result = await this.CreateBioMechanicsData(this.state);
-		console.log("Result", result)
+		//generateHeartSmartScale
+		var heartSmartScale = await this.generateHeartSmartScale();
+		var heartSmartRisk = await this.generateHeartSmartRisk(heartSmartScale);
+		console.log("Heart Smart Scale", heartSmartScale);
+		console.log("Heart Smart Risk", heartSmartRisk);
+
+		var formData = this.state;
+		formData['heartSmartScale'] = heartSmartScale;
+		formData['heartSmartRisk'] = heartSmartRisk;
+
+		this.setState(initalState, async () => {
+			//submit form data to firestore and update summary
+			const result = await this.CreateBioMechanicsData(formData);
+			console.log("Result", result);
+		});
 	};
 
 	handleChange = e => {
@@ -270,7 +350,7 @@ class BiomechanicsForm extends Component {
 
 	render() {
 		const {name, cholesterol, physicalActivity, bmi, weight, heartRate, height,
-			 bloodPressure, smoking, notes, gait, createdAt, timeUpGo} = this.state;
+			 bloodPressure, smoking, notes, gait, createdAt, timeUpGo, diabetes, waistCircumference} = this.state;
 		return (
 			<div className="content">
 				<Grid fluid>
@@ -404,6 +484,38 @@ class BiomechanicsForm extends Component {
 												bsClass: "form-control",
 												placeholder: "TimeUpGo",
 												value: timeUpGo,
+												name: 'timeUpGo',
+												onChange: this.handleChange
+											}
+										]}
+										/>
+										<FormInputs
+										ncols={["col-md-4", "col-md-4", "col-md-4"]}
+										properties={[
+											{
+												label: "diabetes",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "Diabetes",
+												value: diabetes,
+												name: 'diabetes',
+												onChange: this.handleChange
+											},
+											{
+												label: "Waist Circumference",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "Waist Circumference",
+												value: waistCircumference,
+												name: 'waistCircumference',
+												onChange: this.handleChange
+											},
+											{
+												label: "",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "TimeUpGo",
+												value: 0,
 												name: 'timeUpGo',
 												onChange: this.handleChange
 											}

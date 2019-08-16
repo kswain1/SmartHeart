@@ -47,10 +47,6 @@ class AdminNavbarLinks extends Component {
             <MenuItem eventKey={2.4}>Notification 4</MenuItem>
             <MenuItem eventKey={2.5}>Another notifications</MenuItem>
           </NavDropdown>
-          <NavItem eventKey={3} href="#">
-            <i className="fa fa-search" />
-            <p className="hidden-lg hidden-md">Search</p>
-          </NavItem>
         </Nav>
         <Nav pullRight>
           <NavItem eventKey={1} href="#">
@@ -69,7 +65,11 @@ class AdminNavbarLinks extends Component {
             <MenuItem divider />
             <MenuItem eventKey={2.5}>Separated link</MenuItem>
           </NavDropdown>
-          <NavItem eventKey={3} href="#">
+          <NavItem onClick={() => {
+            localStorage.clear();
+            this.props.history.push('/');
+          }}
+          eventKey={3} href="#">
             Log out
           </NavItem>
         </Nav>

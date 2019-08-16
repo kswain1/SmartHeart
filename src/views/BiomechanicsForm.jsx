@@ -17,173 +17,268 @@
 */
 import React, { Component } from "react";
 import {
-    Grid,
-    Row,
-    Col,
-    FormGroup,
-    ControlLabel,
-    FormControl
+	Grid,
+	Row,
+	Col,
+	FormGroup,
+	ControlLabel,
+	FormControl,
+	Form
 } from "react-bootstrap";
-
+import moment from 'moment';
 import { Card } from "components/Card/Card.jsx";
 import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
+import {withFirebase} from '../components/Firebase';
 
 import avatar from "assets/img/faces/face-3.jpg";
 
 class BiomechanicsForm extends Component {
-    render() {
-        return (
-            <div className="content">
-                <Grid fluid>
-                    <Row>
-                        <Col md={12}>
-                            <Card
-                                title="Edit Profile"
-                                content={
-                                    <form>
-                                        <FormInputs
-                                            ncols={["col-md-5", "col-md-3", "col-md-4"]}
-                                            properties={[
-                                                {
-                                                    label: "Company",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Company",
-                                                    defaultValue: "Creative Code Inc.",
-                                                    disabled: false
-                                                },
-                                                {
-                                                    label: "Username",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Username",
-                                                    defaultValue: "michael23"
-                                                },
-                                                {
-                                                    label: "Email address",
-                                                    type: "email",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Email"
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={["col-md-6", "col-md-6"]}
-                                            properties={[
-                                                {
-                                                    label: "First name",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "First name",
-                                                    defaultValue: "Mike"
-                                                },
-                                                {
-                                                    label: "Last name",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Last name",
-                                                    defaultValue: "Andrew"
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={["col-md-12"]}
-                                            properties={[
-                                                {
-                                                    label: "Adress",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Home Adress",
-                                                    defaultValue:
-                                                        "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                                                }
-                                            ]}
-                                        />
-                                        <FormInputs
-                                            ncols={["col-md-4", "col-md-4", "col-md-4"]}
-                                            properties={[
-                                                {
-                                                    label: "Physical Activity",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Physical Activity",
-                                                    defaultValue: ""
-                                                },
-                                                {
-                                                    label: "Date of Birth",
-                                                    type: "text",
-                                                    bsClass: "form-control",
-                                                    placeholder: "Date of Birth",
-                                                    defaultValue: ""
-                                                },
-                                                {
-                                                    label: "Weight",
-                                                    type: "number",
-                                                    bsClass: "form-control",
-                                                    placeholder: "175"
-                                                }
-                                            ]}
-                                        />
 
-                                        <Row>
-                                            <Col md={12}>
-                                                <FormGroup controlId="formControlsTextarea">
-                                                    <ControlLabel>About Me</ControlLabel>
-                                                    <FormControl
-                                                        rows="5"
-                                                        componentClass="textarea"
-                                                        bsClass="form-control"
-                                                        placeholder="Here can be your description"
-                                                        defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-                                                    />
-                                                </FormGroup>
-                                            </Col>
-                                        </Row>
-                                        <Button bsStyle="info" pullRight fill type="submit">
-                                            Update Profile
-                                        </Button>
-                                        <div className="clearfix" />
-                                    </form>
-                                }
-                            />
-                        </Col>
-                        {/*<Col md={4}>*/}
-                        {/*  <UserCard*/}
-                        {/*    bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"*/}
-                        {/*    avatar={avatar}*/}
-                        {/*    name="Mike Andrew"*/}
-                        {/*    userName="michael24"*/}
-                        {/*    description={*/}
-                        {/*      <span>*/}
-                        {/*        "Lamborghini Mercy*/}
-                        {/*        <br />*/}
-                        {/*        Your chick she so thirsty*/}
-                        {/*        <br />*/}
-                        {/*        I'm in that two seat Lambo"*/}
-                        {/*      </span>*/}
-                        {/*    }*/}
-                        {/*    socials={*/}
-                        {/*      <div>*/}
-                        {/*        <Button simple>*/}
-                        {/*          <i className="fa fa-facebook-square" />*/}
-                        {/*        </Button>*/}
-                        {/*        <Button simple>*/}
-                        {/*          <i className="fa fa-twitter" />*/}
-                        {/*        </Button>*/}
-                        {/*        <Button simple>*/}
-                        {/*          <i className="fa fa-google-plus-square" />*/}
-                        {/*        </Button>*/}
-                        {/*      </div>*/}
-                        {/*    }*/}
-                        {/*  />*/}
-                        {/*</Col>*/}
-                    </Row>
-                </Grid>
-            </div>
-        );
+	constructor(props){
+		super(props);
+		this.state = {
+			name: '',
+			cholesterol: '',
+			physicalActivity: '',
+			bmi: '',
+			weight: '',
+			notes: '',
+			createdAt: moment().format()
+		}
+	}
+
+	componentDidMount(){
+		//this.DeleteDocumentsInWeeklyIntake();
+		//this.InitializeWeeklyIntake();
+		this.GetAllWeeklyIntake();
+	}
+
+	/**
+	 * Only use this to delete the weeklyIntake collection
+	 */
+	DeleteDocumentsInWeeklyIntake(){
+		this.props.firebase.weeklyIntake().get().then(snapshot => {
+			snapshot.forEach((doc) => {
+				console.log(doc.id, doc.data())
+
+				this.props.firebase.weeklyIntake().doc(doc.id).delete().then(function() {
+					console.log("Document successfully deleted!");
+				}).catch(function(error) {
+					console.error("Error removing document: ", error);
+				});
+            });
+		});
+	}
+
+	/**
+	 * initalize weeklyIntake collection with a -summary- document.
+	 * The summary document would hold all Biomechanics form data, and as well quick summary for easy access.
+	 * P.S: Only use this if you deleted the weeklyIntake collection.
+	 */
+	InitializeWeeklyIntake = () => {
+		this.props.firebase.weeklyIntakeSummary().set({
+			totalBMI: Number(0),
+			averageBMI: Number(0),
+			bmiEntryCount: Number(0),
+			yearlyAverage: {}
+		}).then(res => {
+			console.log('res from initalize', res);
+		});
+	}
+
+	/**
+	 * Get data from weeklyIntake collection
+	 */
+	GetAllWeeklyIntake = () => {
+		this.props.firebase.weeklyIntake().get().then(snapshot => {
+			snapshot.forEach((doc) => {
+				console.log(doc.id, doc.data());
+            });
+		});
+	}
+
+	/**
+	 * This function serves as the firestore aggregration query.
+	 * It's sole purpose is to update the weeklyIntake aggregation summary.
+	 * DO NOT DELETE
+	 */
+	CreateBioMechanicsData = (data) => {
+		
+		var WeeklySummaryDoc = this.props.firebase.weeklyIntakeSummary();
+		var WeeklySummaryDataCollection = this.props.firebase.weeklyIntakeSummaryData().doc();
+		
+		// Create a reference for a new BMI, for use inside the transaction
+        var summaryDataRef = WeeklySummaryDataCollection;
+    
+        // In a transaction, add the new bmi and update the aggregate totals
+        return this.props.firebase.firestoreDB().runTransaction(transaction => {
+            return transaction.get(WeeklySummaryDoc).then(res => {
+                if (!res.exists) {
+					throw "Document does not exist!";
+                }
+
+				//get BMI and CreatedAt from data
+                var BMI = Number(data.bmi);
+                var dateCreated = data.createdAt;
+
+                //get count of BMI entries
+                var bmiEntryCount = res.data().bmiEntryCount;
+                var newBmiEntryCount = bmiEntryCount + 1;
+
+                //compute total BMI
+                var newTotalBMI = res.data().totalBMI + BMI;
+    
+                // Compute new average BMI
+                var newAverageBMI = newTotalBMI / newBmiEntryCount;
+
+                //set yearly average
+                var yearlyAverage = res.data().yearlyAverage;
+                var week = moment(dateCreated).week();
+                var year = moment(dateCreated).year();
+                var weekAverageData = yearlyAverage && yearlyAverage[`${year}`] && yearlyAverage[`${year}`][`${week}`] || {count: 0, average: 0, total: 0};
+
+				//update weekly count, weekly total, and weekly average for this week
+                var newWeeklyCount = weekAverageData.count + 1;
+                var newWeeklyTotal = weekAverageData.total + BMI;
+                var newWeeklyAvg = newWeeklyTotal / newWeeklyCount;
+                var newYearlyAverage = {
+                    ...yearlyAverage,
+                    [`${year}`]: {
+                        ...yearlyAverage[`${year}`],
+                        [`${week}`]: {
+                            count: newWeeklyCount,
+                            average: newWeeklyAvg,
+                            total: newWeeklyTotal
+                        }
+                    }
+                }
+                
+                // Commit to Firestore, update the weeklyIntakeSummary
+                transaction.update(WeeklySummaryDoc, {
+                    totalBMI: newTotalBMI,
+                    averageBMI: newAverageBMI,
+                    bmiEntryCount: newBmiEntryCount,
+                    yearlyAverage: newYearlyAverage
+				});
+
+				//Commit to Firestore, add new data to the weeklyIntakeSummary data
+                transaction.set(summaryDataRef, { ...data });
+            })
+        });
     }
+
+	handleSubmit = async (e) => {
+		e.preventDefault();
+		console.log('Firebase instanceee', this.state);
+
+		//submit form data to firestore and update summary
+		const result = await this.CreateBioMechanicsData(this.state);
+		console.log("Result", result)
+	};
+
+	handleChange = e => {
+		console.log('ee target', e.target.name, 'valll', e.target.value);
+		this.setState({[e.target.name]: e.target.value})
+	}
+
+	render() {
+		const {name, cholesterol, physicalActivity, bmi, weight, heartRate, notes} = this.state;
+		return (
+			<div className="content">
+				<Grid fluid>
+					<Row>
+						<Col md={12}>
+							<Card
+								title="Edit Profile"
+								content={
+									<form onSubmit={this.handleSubmit} >
+										<FormInputs
+										ncols={["col-md-5", "col-md-3", "col-md-4"]}
+										properties={[
+											{
+												label: "Name",
+												type: "text",
+												bsClass: "form-control",
+												placeholder: "Name",
+												value: name,
+												disabled: false,
+												name: 'name',
+												onChange: this.handleChange
+											},
+											{
+												label: "cholesterol",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "cholesterol",
+												value: cholesterol,
+												name: 'cholesterol',
+												onChange: this.handleChange
+											},
+											{
+												label: "physicalActivity",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "physicalActivity",
+												name: 'physicalActivity',
+												value: physicalActivity,
+												onChange: this.handleChange
+											}
+										]}
+										/>
+										<FormInputs
+										ncols={["col-md-6", "col-md-6"]}
+										properties={[
+											{
+												label: "bmi",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "bmi",
+												value: bmi,
+												name: 'bmi',
+												onChange: this.handleChange
+											},
+											{
+												label: "weight",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "weight",
+												value: weight,
+												name: 'weight',
+												onChange: this.handleChange
+											}
+										]}
+										/>
+										<Row>
+											<Col md={12}>
+												<FormGroup controlId="formControlsTextarea">
+												<ControlLabel>Extra Notes</ControlLabel>
+												<FormControl
+													rows="5"
+													componentClass="textarea"
+													bsClass="form-control"
+													placeholder="Here can be your description"
+													value={notes}
+													name='notes'
+													onChange={this.handleChange}
+												/>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Button bsStyle="info" pullRight fill type="submit">
+											Update Profile
+										</Button>
+										<div className="clearfix" />
+									</form>
+								}
+							/>
+						</Col>
+					</Row>
+				</Grid>
+			</div>
+		);
+	}
 }
 
-export default BiomechanicsForm;
+export default withFirebase(BiomechanicsForm);

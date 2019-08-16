@@ -38,154 +38,183 @@ import {
   legendPhysAct,
   responsivePhysAct,
 } from "variables/Variables.jsx";
+import {withFirebase} from '../components/Firebase';
 
 class Dashboard extends Component {
-  createLegend(json) {
-    var legend = [];
-    for (var i = 0; i < json["names"].length; i++) {
-      var type = "fa fa-circle text-" + json["types"][i];
-      legend.push(<i className={type} key={i} />);
-      legend.push(" ");
-      legend.push(json["names"][i]);
+    
+    state = {
+        averageBMI: 0,
+        yearlyAverage: {},
+        loading: false
     }
-    return legend;
-  }
-  render() {
-    return (
-      <div className="content">
-        <Grid fluid>
-          <Row>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-like text-warning" />}
-                statsText="Avg. Heart Rate"
-                statsValue="97"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Updated now"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-smile text-success" />}
-                statsText="Empowerment"
-                statsValue="90%"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Last day"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-gleam text-danger" />}
-                statsText="Gait Speed MPH"
-                statsValue="6"
-                statsIcon={<i className="fa fa-clock-o" />}
-                statsIconText="In the last hour"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="fa fa-heartbeat text-danger" />}
-                statsText="Blood Pressue"
-                statsValue="150"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Updated now"
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col md={8}>
-              <Card
-                statsIcon="fa fa-history"
-                id="chartHours"
-                title="Heart Smart Risk Scale"
-                category="12 week cohort performance"
-                stats="Updated 3 minutes ago"
-                content={
-                  <div className="ct-chart">
-                    <ChartistGraph
-                      data={dataSales}
-                      type="Line"
-                      options={optionsSales}
-                      responsiveOptions={responsiveSales}
-                    />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendSales)}</div>
-                }
-              />
-            </Col>
-            <Col md={4}>
-              <Card
-                statsIcon="fa fa-clock-o"
-                title="Cohort Phase Performance Average"
-                category="Last Phase Performance"
-                stats="Phase sent 2 days ago"
-                content={
-                  <div
-                    id="chartPreferences"
-                    className="ct-chart ct-perfect-fourth"
-                  >
-                    <ChartistGraph data={dataPie} type="Pie" />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendPie)}</div>
-                }
-              />
-            </Col>
-          </Row>
 
-          <Row>
-            <Col md={6}>
-              <Card
-                id="chartActivity"
-                title="Gait vs Blood Pressure"
-                category="Collective information from Cohort 1"
-                stats="Data information certified"
-                statsIcon="fa fa-check"
-                content={
-                  <div className="ct-chart">
-                    <ChartistGraph
-                      data={dataBar}
-                      type="Bar"
-                      options={optionsBar}
-                      responsiveOptions={responsiveBar}
-                    />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendBar)}</div>
-                }
-              />
-            </Col>
+    componentDidMount() {
+        this.GetWeeklyIntakeSummary();
+    }
+    
+    createLegend(json) {
+        var legend = [];
+        for (var i = 0; i < json["names"].length; i++) {
+            var type = "fa fa-circle text-" + json["types"][i];
+            legend.push(<i className={type} key={i} />);
+            legend.push(" ");
+            legend.push(json["names"][i]);
+        }
+        return legend;
+    }
 
-            <Col md={6}>
-              <Card
-                title="Physical Activity Per Week"
-                category="Cohort 1"
-                stats="Updated 3 minutes ago"
-                statsIcon="fa fa-history"
-                content={
-                  <div className="ct-chart">
-                    <ChartistGraph
-                        data={physicalAct}
-                        type="Line"
-                        options={optionsPhysAct}
-                        responsiveOptions={responsivePhysAct}
-                    />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendPhysAct)}</div>
-                }
-              />
-            </Col>
-          </Row>
-        </Grid>
-      </div>
-    );
-  }
+    /**
+     * Get summary data from weeklyIntake collection
+     */
+    GetWeeklyIntakeSummary = () => {
+		this.props.firebase.weeklyIntakeSummary().get().then(summary => {
+			summary && summary.id && this.setState({
+                yearlyAverage: summary.data().yearlyAverage,
+                averageBMI: parseFloat(Math.round(summary.data().averageBMI * 100) / 100).toFixed(2)
+            })
+		});
+	}
+    
+    render() {
+        const { averageBMI, yearlyAverage } = this.state;
+        console.log('Yearly Average', yearlyAverage);
+
+        return (
+            <div className="content">
+                <Grid fluid>
+                    <Row>
+                        <Col lg={3} sm={6}>
+                            <StatsCard
+                                bigIcon={<i className="pe-7s-like text-warning" />}
+                                statsText="Avg. Heart Rate"
+                                statsValue={averageBMI}
+                                statsIcon={<i className="fa fa-refresh" />}
+                                statsIconText="Updated now"
+                            />
+                        </Col>
+                        <Col lg={3} sm={6}>
+                            <StatsCard
+                                bigIcon={<i className="pe-7s-smile text-success" />}
+                                statsText="Empowerment"
+                                statsValue="90%"
+                                statsIcon={<i className="fa fa-refresh" />}
+                                statsIconText="Last day"
+                            />
+                        </Col>
+                        <Col lg={3} sm={6}>
+                            <StatsCard
+                                bigIcon={<i className="pe-7s-gleam text-danger" />}
+                                statsText="Gait Speed MPH"
+                                statsValue="6"
+                                statsIcon={<i className="fa fa-clock-o" />}
+                                statsIconText="In the last hour"
+                            />
+                        </Col>
+                        <Col lg={3} sm={6}>
+                            <StatsCard
+                                bigIcon={<i className="fa fa-heartbeat text-danger" />}
+                                statsText="Blood Pressue"
+                                statsValue="150"
+                                statsIcon={<i className="fa fa-refresh" />}
+                                statsIconText="Updated now"
+                            />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col md={8}>
+                            <Card
+                                statsIcon="fa fa-history"
+                                id="chartHours"
+                                title="Heart Smart Risk Scale"
+                                category="12 week cohort performance"
+                                stats="Updated 3 minutes ago"
+                                content={
+                                <div className="ct-chart">
+                                    <ChartistGraph
+                                    data={dataSales}
+                                    type="Line"
+                                    options={optionsSales}
+                                    responsiveOptions={responsiveSales}
+                                    />
+                                </div>
+                                }
+                                legend={
+                                <div className="legend">{this.createLegend(legendSales)}</div>
+                                }
+                            />
+                        </Col>
+                        <Col md={4}>
+                            <Card
+                                statsIcon="fa fa-clock-o"
+                                title="Cohort Phase Performance Average"
+                                category="Last Phase Performance"
+                                stats="Phase sent 2 days ago"
+                                content={
+                                <div
+                                    id="chartPreferences"
+                                    className="ct-chart ct-perfect-fourth"
+                                >
+                                    <ChartistGraph data={dataPie} type="Pie" />
+                                </div>
+                                }
+                                legend={
+                                <div className="legend">{this.createLegend(legendPie)}</div>
+                                }
+                            />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col md={6}>
+                            <Card
+                                id="chartActivity"
+                                title="Gait vs Blood Pressure"
+                                category="Collective information from Cohort 1"
+                                stats="Data information certified"
+                                statsIcon="fa fa-check"
+                                content={
+                                <div className="ct-chart">
+                                    <ChartistGraph
+                                    data={dataBar}
+                                    type="Bar"
+                                    options={optionsBar}
+                                    responsiveOptions={responsiveBar}
+                                    />
+                                </div>
+                                }
+                                legend={
+                                <div className="legend">{this.createLegend(legendBar)}</div>
+                                }
+                            />
+                        </Col>
+
+                        <Col md={6}>
+                            <Card
+                                title="Physical Activity Per Week"
+                                category="Cohort 1"
+                                stats="Updated 3 minutes ago"
+                                statsIcon="fa fa-history"
+                                content={
+                                <div className="ct-chart">
+                                    <ChartistGraph
+                                        data={physicalAct}
+                                        type="Line"
+                                        options={optionsPhysAct}
+                                        responsiveOptions={responsivePhysAct}
+                                    />
+                                </div>
+                                }
+                                legend={
+                                <div className="legend">{this.createLegend(legendPhysAct)}</div>
+                                }
+                            />
+                        </Col>
+                    </Row>
+                </Grid>
+            </div>
+        );
+    }
 }
 
-export default Dashboard;
+export default withFirebase(Dashboard);

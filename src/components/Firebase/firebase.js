@@ -21,7 +21,12 @@ class Firebase {
         this.db = app.firestore();
     }
 
+    firestoreDB = () => this.db;
+    firestoreCollection = (col) => this.db.collection(col);
     enrollmentForms = () => this.db.collection(`enrollmentForm`);
+    weeklyIntake = () => this.db.collection('weeklyIntake');
+    weeklyIntakeSummary = () => this.weeklyIntake().doc("summary");
+    weeklyIntakeSummaryData = () => this.weeklyIntakeSummary().collection("data");
 };
 
 export default Firebase;

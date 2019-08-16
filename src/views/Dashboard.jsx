@@ -16,6 +16,7 @@
 
 */
 import React, { Component } from "react";
+import moment from 'moment';
 import ChartistGraph from "react-chartist";
 import { Grid, Row, Col } from "react-bootstrap";
 
@@ -41,17 +42,26 @@ import {
 import {withFirebase} from '../components/Firebase';
 
 class Dashboard extends Component {
-    
+
     state = {
         averageBMI: 0,
+        averageHeartRate: 0,
+        averageWeight: 0,
         yearlyAverage: {},
-        loading: false
+        loading: false,
+        currentyear: moment().year(),
+        heartSeriesData: {},
+        heartSeriesValues: [],
+        bmiSeriesData: {},
+        bmiSeriesValues: [],
+        weightSeriesData: {},
+        weightSeriesValues: [],
     }
 
     componentDidMount() {
         this.GetWeeklyIntakeSummary();
     }
-    
+
     createLegend(json) {
         var legend = [];
         for (var i = 0; i < json["names"].length; i++) {
@@ -67,17 +77,102 @@ class Dashboard extends Component {
      * Get summary data from weeklyIntake collection
      */
     GetWeeklyIntakeSummary = () => {
-		this.props.firebase.weeklyIntakeSummary().get().then(summary => {
-			summary && summary.id && this.setState({
-                yearlyAverage: summary.data().yearlyAverage,
-                averageBMI: parseFloat(Math.round(summary.data().averageBMI * 100) / 100).toFixed(2)
-            })
-		});
+      const { currentyear } = this.state;
+      this.props.firebase.weeklyIntakeSummary().get().then(summary => {
+        if(summary && summary.id){
+          var { average, yearlyAverage } = summary.data();
+          var currentYearData = yearlyAverage && yearlyAverage[currentyear];
+          this.setState({
+                yearlyAverage: yearlyAverage,
+                currentYearData: currentYearData,
+                averageBMI: parseFloat(Math.round(average.bmi * 100) / 100).toFixed(2),
+                averageWeight: parseFloat(Math.round(average.weight * 100) / 100).toFixed(2),
+                averageHeartRate: parseFloat(Math.round(average.heartRate * 100) / 100).toFixed(2),
+          }, () => {
+            //computes data in form for graphs
+            this.createHeartRateSeriesData();
+            this.createBMISeriesData();
+            this.createWeightSeriesData();
+
+          })
+        }
+      });
 	}
-    
+
+    createHeartRateSeriesData = () => {
+      const { currentYearData } = this.state;
+      const labels = currentYearData && Object.keys(currentYearData);
+      const values = currentYearData && Object.values(currentYearData);
+
+      const heartSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+        return `Week ${label}`;
+      });
+
+      const heartSeriesValues = values && values.length > 0 && values.map((value, index) => {
+        return value.average.heartRate;
+      });
+
+      const heartSeriesData = {
+        labels: heartSeriesLabels,
+        series: [ heartSeriesValues, ]
+      }
+
+      console.log('Heart series data', heartSeriesData);
+
+      this.setState({ heartSeriesData, heartSeriesValues })
+    }
+
+    createBMISeriesData = () => {
+      const { currentYearData } = this.state;
+      const labels = currentYearData && Object.keys(currentYearData);
+      const values = currentYearData && Object.values(currentYearData);
+
+      const bmiSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+        return `${label}`;
+      });
+
+      const bmiSeriesValues = values && values.length > 0 && values.map((value, index) => {
+        return value.average.bmi;
+      });
+
+      const bmiSeriesData = {
+        labels: bmiSeriesLabels,
+        series: [ bmiSeriesValues, ]
+      }
+
+      console.log('bmi series data', bmiSeriesData);
+
+      this.setState({ bmiSeriesData, bmiSeriesValues })
+    }
+
+    createWeightSeriesData = () => {
+      const { currentYearData } = this.state;
+      const labels = currentYearData && Object.keys(currentYearData);
+      const values = currentYearData && Object.values(currentYearData);
+
+      const weightSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+        return `${label}`;
+      });
+
+      const weightSeriesValues = values && values.length > 0 && values.map((value, index) => {
+        return value.average.weight;
+      });
+
+      const weightSeriesData = {
+        labels: weightSeriesLabels,
+        series: [ weightSeriesValues, ]
+      }
+
+      console.log('weight series data', weightSeriesData);
+
+      this.setState({ weightSeriesData, weightSeriesValues })
+    }
+
     render() {
-        const { averageBMI, yearlyAverage } = this.state;
-        console.log('Yearly Average', yearlyAverage);
+        const { averageBMI, averageWeight, averageHeartRate, yearlyAverage,
+           heartSeriesData, heartSeriesValues, currentyear, bmiSeriesData,
+            bmiSeriesValues, weightSeriesData, weightSeriesValues } = this.state;
+
 
         return (
             <div className="content">
@@ -87,7 +182,7 @@ class Dashboard extends Component {
                             <StatsCard
                                 bigIcon={<i className="pe-7s-like text-warning" />}
                                 statsText="Avg. Heart Rate"
-                                statsValue={averageBMI}
+                                statsValue={averageHeartRate}
                                 statsIcon={<i className="fa fa-refresh" />}
                                 statsIconText="Updated now"
                             />
@@ -95,8 +190,8 @@ class Dashboard extends Component {
                         <Col lg={3} sm={6}>
                             <StatsCard
                                 bigIcon={<i className="pe-7s-smile text-success" />}
-                                statsText="Empowerment"
-                                statsValue="90%"
+                                statsText="Avg. BMI"
+                                statsValue={averageBMI}
                                 statsIcon={<i className="fa fa-refresh" />}
                                 statsIconText="Last day"
                             />
@@ -104,8 +199,8 @@ class Dashboard extends Component {
                         <Col lg={3} sm={6}>
                             <StatsCard
                                 bigIcon={<i className="pe-7s-gleam text-danger" />}
-                                statsText="Gait Speed MPH"
-                                statsValue="6"
+                                statsText="Avg. Weight"
+                                statsValue={averageWeight}
                                 statsIcon={<i className="fa fa-clock-o" />}
                                 statsIconText="In the last hour"
                             />
@@ -122,17 +217,18 @@ class Dashboard extends Component {
                     </Row>
 
                     <Row>
-                        <Col md={8}>
+                        {
+                          heartSeriesData && heartSeriesValues && heartSeriesValues.length > 0 && <Col md={8}>
                             <Card
                                 statsIcon="fa fa-history"
                                 id="chartHours"
-                                title="Heart Smart Risk Scale"
+                                title="Heart Rate Chart"
                                 category="12 week cohort performance"
                                 stats="Updated 3 minutes ago"
                                 content={
                                 <div className="ct-chart">
                                     <ChartistGraph
-                                    data={dataSales}
+                                    data={heartSeriesData}
                                     type="Line"
                                     options={optionsSales}
                                     responsiveOptions={responsiveSales}
@@ -143,7 +239,8 @@ class Dashboard extends Component {
                                 <div className="legend">{this.createLegend(legendSales)}</div>
                                 }
                             />
-                        </Col>
+                          </Col>
+                        }
                         <Col md={4}>
                             <Card
                                 statsIcon="fa fa-clock-o"
@@ -166,17 +263,18 @@ class Dashboard extends Component {
                     </Row>
 
                     <Row>
+                      { weightSeriesData && weightSeriesValues && weightSeriesValues.length > 0 &&
                         <Col md={6}>
                             <Card
-                                id="chartActivity"
-                                title="Gait vs Blood Pressure"
+                                id="weightActivity"
+                                title="Weight Activity"
                                 category="Collective information from Cohort 1"
                                 stats="Data information certified"
                                 statsIcon="fa fa-check"
                                 content={
                                 <div className="ct-chart">
                                     <ChartistGraph
-                                    data={dataBar}
+                                    data={weightSeriesData}
                                     type="Bar"
                                     options={optionsBar}
                                     responsiveOptions={responsiveBar}
@@ -188,17 +286,19 @@ class Dashboard extends Component {
                                 }
                             />
                         </Col>
+                      }
 
                         <Col md={6}>
+                          { bmiSeriesData && bmiSeriesValues && bmiSeriesValues.length > 0 &&
                             <Card
-                                title="Physical Activity Per Week"
+                                title="BMI Activity Per Week"
                                 category="Cohort 1"
                                 stats="Updated 3 minutes ago"
                                 statsIcon="fa fa-history"
                                 content={
                                 <div className="ct-chart">
                                     <ChartistGraph
-                                        data={physicalAct}
+                                        data={bmiSeriesData}
                                         type="Line"
                                         options={optionsPhysAct}
                                         responsiveOptions={responsivePhysAct}
@@ -209,6 +309,7 @@ class Dashboard extends Component {
                                 <div className="legend">{this.createLegend(legendPhysAct)}</div>
                                 }
                             />
+                          }
                         </Col>
                     </Row>
                 </Grid>

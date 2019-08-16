@@ -44,8 +44,14 @@ class BiomechanicsForm extends Component {
 			physicalActivity: '',
 			bmi: '',
 			weight: '',
+			heartRate: '',
+			height: '',
+			bloodPressure: '',
+			smoking: '',
 			notes: '',
-			createdAt: moment().format()
+			createdAt: moment().format(),
+			gait: '',
+			timeUpGo: '',
 		}
 	}
 
@@ -79,9 +85,21 @@ class BiomechanicsForm extends Component {
 	 */
 	InitializeWeeklyIntake = () => {
 		this.props.firebase.weeklyIntakeSummary().set({
-			totalBMI: Number(0),
-			averageBMI: Number(0),
-			bmiEntryCount: Number(0),
+			total: {
+				bmi: Number(0),
+				heartRate: Number(0),
+				weight: Number(0)
+			},
+			average: {
+				bmi: Number(0),
+				heartRate: Number(0),
+				weight: Number(0)
+			},
+			entryCount: {
+				bmi: Number(0),
+				heartRate: Number(0),
+				weight: Number(0)
+			},
 			yearlyAverage: {}
 		}).then(res => {
 			console.log('res from initalize', res);
@@ -105,13 +123,13 @@ class BiomechanicsForm extends Component {
 	 * DO NOT DELETE
 	 */
 	CreateBioMechanicsData = (data) => {
-		
+
 		var WeeklySummaryDoc = this.props.firebase.weeklyIntakeSummary();
 		var WeeklySummaryDataCollection = this.props.firebase.weeklyIntakeSummaryData().doc();
-		
+
 		// Create a reference for a new BMI, for use inside the transaction
         var summaryDataRef = WeeklySummaryDataCollection;
-    
+
         // In a transaction, add the new bmi and update the aggregate totals
         return this.props.firebase.firestoreDB().runTransaction(transaction => {
             return transaction.get(WeeklySummaryDoc).then(res => {
@@ -121,45 +139,112 @@ class BiomechanicsForm extends Component {
 
 				//get BMI and CreatedAt from data
                 var BMI = Number(data.bmi);
+								var HeartRate = Number(data.heartRate);
+								var Weight = Number(data.weight);
                 var dateCreated = data.createdAt;
 
                 //get count of BMI entries
-                var bmiEntryCount = res.data().bmiEntryCount;
-                var newBmiEntryCount = bmiEntryCount + 1;
+								var entryCounts = res.data().entryCount;
+                var bmiEntryCount = entryCounts.bmi;
+								var heartRateEntryCount = entryCounts.heartRate;
+								var weightEntryCount = entryCounts.weight;
+
+								var newBmiEntryCount = bmiEntryCount + 1;
+								var newHeartRateEntryCount = heartRateEntryCount + 1;
+								var newWeightEntryCount = weightEntryCount + 1;
 
                 //compute total BMI
-                var newTotalBMI = res.data().totalBMI + BMI;
-    
+								var total = res.data().total;
+                var newTotalBMI = total.bmi + BMI;
+								var newTotalHeartRate = total.heartRate + HeartRate;
+								var newTotalWeight = total.weight + Weight;
+
                 // Compute new average BMI
                 var newAverageBMI = newTotalBMI / newBmiEntryCount;
+								var newAverageHeartRate = newTotalHeartRate / newHeartRateEntryCount;
+								var newAverageWeight = newTotalWeight / newWeightEntryCount;
+
 
                 //set yearly average
                 var yearlyAverage = res.data().yearlyAverage;
                 var week = moment(dateCreated).week();
                 var year = moment(dateCreated).year();
-                var weekAverageData = yearlyAverage && yearlyAverage[`${year}`] && yearlyAverage[`${year}`][`${week}`] || {count: 0, average: 0, total: 0};
+                var weekAverageData = yearlyAverage && yearlyAverage[`${year}`] && yearlyAverage[`${year}`][`${week}`] || {
+										count: {
+											bmi: 0,
+											heartRate: 0,
+											weight: 0
+										},
+										average: {
+											bmi: 0,
+											heartRate: 0,
+											weight: 0
+										},
+										total: {
+											bmi: 0,
+											heartRate: 0,
+											weight: 0
+										}
+								};
 
 				//update weekly count, weekly total, and weekly average for this week
-                var newWeeklyCount = weekAverageData.count + 1;
-                var newWeeklyTotal = weekAverageData.total + BMI;
-                var newWeeklyAvg = newWeeklyTotal / newWeeklyCount;
+								var weeklyTotal = weekAverageData.total;
+								var weeklyCount = weekAverageData.count;
+								var weeklyAverage = weekAverageData.average;
+
+								var newWeeklyBMICount = weeklyCount.bmi + 1;
+                var newWeeklyBMITotal = weeklyTotal.bmi + BMI;
+                var newWeeklyBMIAvg = newWeeklyBMITotal / newWeeklyBMICount;
+
+								var newWeeklyHeartRateCount = weeklyCount.heartRate + 1;
+                var newWeeklyHeartRateTotal = weeklyTotal.heartRate + HeartRate;
+                var newWeeklyHeartRateAvg = newWeeklyHeartRateTotal / newWeeklyHeartRateCount;
+
+								var newWeeklyWeightCount = weeklyCount.weight + 1;
+                var newWeeklyWeightTotal = weeklyTotal.weight + Weight;
+                var newWeeklyWeightAvg = newWeeklyWeightTotal / newWeeklyWeightCount;
+
                 var newYearlyAverage = {
                     ...yearlyAverage,
                     [`${year}`]: {
                         ...yearlyAverage[`${year}`],
                         [`${week}`]: {
-                            count: newWeeklyCount,
-                            average: newWeeklyAvg,
-                            total: newWeeklyTotal
+                            count: {
+															bmi: newWeeklyBMICount,
+															heartRate: newWeeklyHeartRateCount,
+															weight: newWeeklyWeightCount
+														},
+                            average: {
+															bmi: newWeeklyBMIAvg,
+															heartRate: newWeeklyHeartRateAvg,
+															weight: newWeeklyWeightAvg
+														},
+                            total: {
+															bmi: newWeeklyBMITotal,
+															heartRate: newWeeklyHeartRateTotal,
+															weight: newWeeklyWeightTotal
+														}
                         }
                     }
                 }
-                
+
                 // Commit to Firestore, update the weeklyIntakeSummary
                 transaction.update(WeeklySummaryDoc, {
-                    totalBMI: newTotalBMI,
-                    averageBMI: newAverageBMI,
-                    bmiEntryCount: newBmiEntryCount,
+										total: {
+											bmi: newTotalBMI,
+											heartRate: newTotalHeartRate,
+											weight: newTotalWeight
+										},
+										average: {
+											bmi: newAverageBMI,
+											heartRate: newAverageHeartRate,
+											weight: newAverageWeight
+										},
+										entryCount: {
+											bmi: newBmiEntryCount,
+											heartRate: newHeartRateEntryCount,
+											weight: newWeightEntryCount
+										},
                     yearlyAverage: newYearlyAverage
 				});
 
@@ -184,7 +269,8 @@ class BiomechanicsForm extends Component {
 	}
 
 	render() {
-		const {name, cholesterol, physicalActivity, bmi, weight, heartRate, notes} = this.state;
+		const {name, cholesterol, physicalActivity, bmi, weight, heartRate, height,
+			 bloodPressure, smoking, notes, gait, createdAt, timeUpGo} = this.state;
 		return (
 			<div className="content">
 				<Grid fluid>
@@ -228,7 +314,7 @@ class BiomechanicsForm extends Component {
 										]}
 										/>
 										<FormInputs
-										ncols={["col-md-6", "col-md-6"]}
+										ncols={["col-md-4", "col-md-4", "col-md-4"]}
 										properties={[
 											{
 												label: "bmi",
@@ -246,6 +332,79 @@ class BiomechanicsForm extends Component {
 												placeholder: "weight",
 												value: weight,
 												name: 'weight',
+												onChange: this.handleChange
+											},
+											{
+												label: "heartRate",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "Heart Rate",
+												value: heartRate,
+												name: 'heartRate',
+												onChange: this.handleChange
+											}
+										]}
+										/>
+										<FormInputs
+										ncols={["col-md-4", "col-md-4", "col-md-4"]}
+										properties={[
+											{
+												label: "height",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "Height",
+												value: height,
+												name: 'height',
+												onChange: this.handleChange
+											},
+											{
+												label: "bloodPressure",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "Blood Pressure",
+												value: bloodPressure,
+												name: 'bloodPressure',
+												onChange: this.handleChange
+											},
+											{
+												label: "smoking",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "smoking",
+												value: smoking,
+												name: 'smoking',
+												onChange: this.handleChange
+											}
+										]}
+										/>
+										<FormInputs
+										ncols={["col-md-4", "col-md-4", "col-md-4"]}
+										properties={[
+											{
+												label: "createdAt",
+												type: "date",
+												bsClass: "form-control",
+												placeholder: "Date Added",
+												value: createdAt,
+												name: 'createdAt',
+												onChange: this.handleChange
+											},
+											{
+												label: "Gait",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "Gait",
+												value: gait,
+												name: 'gait',
+												onChange: this.handleChange
+											},
+											{
+												label: "Time Up and Go",
+												type: "number",
+												bsClass: "form-control",
+												placeholder: "TimeUpGo",
+												value: timeUpGo,
+												name: 'timeUpGo',
 												onChange: this.handleChange
 											}
 										]}

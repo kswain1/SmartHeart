@@ -55,7 +55,6 @@ const initalState = {
 };
 
 class BiomechanicsForm extends Component {
-
 	constructor(props){
 		super(props);
 		this.state = initalState;

@@ -22,7 +22,8 @@ import {
   Col,
   FormGroup,
   ControlLabel,
-  FormControl
+  FormControl,
+  Form
 } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
@@ -34,30 +35,47 @@ import {withFirebase} from '../components/Firebase';
 import avatar from "assets/img/faces/face-3.jpg";
 
 class UserProfile extends Component {
+  state = {
+    company: '',
+    username: '',
+    email: '',
+    firstName: '',
+    lastName: '',
+    address: '',
+    physicalActivity: '',
+    dob: '',
+    weight: '',
+    about: ''
+  }
+
   handleSubmit = e => {
     e.preventDefault();
-    console.log('firebae instanceee', this.props.firebase);
+    console.log('Firebase instanceee', this.state);
 
 
-    this.props.firebase.enrollmentForms().add({
-      'name': 'testing',
-      'email': 'test@test.com'
-    }).then(res => {
+    this.props.firebase.enrollmentForms().add(this.state).then(res => {
       console.log('res from add', res);
     });
-    this.setState({company: e.target.value});
+
+    //this.setState({company: e.target.value});
   };
 
+  handleChange = e => {
+    console.log('ee target', e.target.name, 'valll', e.target.value);
+    this.setState({[e.target.name]: e.target.value})
+  }
+
   render() {
+    const {company, username, email, firstName, lastName, address, physicalActivity, dob, weight, about} = this.state;
     return (
       <div className="content">
         <Grid fluid>
           <Row>
-            <Col md={8}>
+            <Col md={12}>
               <Card
                 title="Edit Profile"
                 content={
-                  <form onSubmit={this.handleSubmit}>
+                  <form onSubmit={this.handleSubmit} >
                     <FormInputs
                       ncols={["col-md-5", "col-md-3", "col-md-4"]}
                       properties={[
@@ -66,22 +84,28 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Company",
-                          defaultValue: "Creative Code Inc.",
+                          value: company,
                           disabled: false,
                           name: 'company',
+                          onChange: this.handleChange
                         },
                         {
                           label: "Username",
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Username",
-                          defaultValue: "michael23"
+                          value: username,
+                          name: 'username',
+                          onChange: this.handleChange
                         },
                         {
                           label: "Email address",
                           type: "email",
                           bsClass: "form-control",
-                          placeholder: "Email"
+                          placeholder: "Email",
+                          name: 'email',
+                          value: email,
+                          onChange: this.handleChange
                         }
                       ]}
                     />
@@ -93,14 +117,18 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "First name",
-                          defaultValue: "Mike"
+                          value: firstName,
+                          name: 'firstName',
+                          onChange: this.handleChange
                         },
                         {
                           label: "Last name",
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Last name",
-                          defaultValue: "Andrew"
+                          value: lastName,
+                          name: 'lastName',
+                          onChange: this.handleChange
                         }
                       ]}
                     />
@@ -108,12 +136,13 @@ class UserProfile extends Component {
                       ncols={["col-md-12"]}
                       properties={[
                         {
-                          label: "Adress",
+                          label: "Address",
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Home Address",
-                          defaultValue:
-                            "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+                          value: address,
+                          name: 'address',
+                          onChange: this.handleChange
                         }
                       ]}
                     />
@@ -125,20 +154,27 @@ class UserProfile extends Component {
                           type: "text",
                           bsClass: "form-control",
                           placeholder: "Physical Activity",
-                          defaultValue: ""
+                          value: physicalActivity,
+                          name: 'physicalActivity',
+                          onChange: this.handleChange
                         },
                         {
                           label: "Date of Birth",
-                          type: "text",
+                          type: "date",
                           bsClass: "form-control",
                           placeholder: "Date of Birth",
-                          defaultValue: ""
+                          value: dob,
+                          name: 'dob',
+                          onChange: this.handleChange
                         },
                         {
                           label: "Weight",
                           type: "number",
                           bsClass: "form-control",
-                          placeholder: "175"
+                          placeholder: "175",
+                          name: 'weight',
+                          value: weight,
+                          onChange: this.handleChange
                         }
                       ]}
                     />
@@ -152,7 +188,9 @@ class UserProfile extends Component {
                             componentClass="textarea"
                             bsClass="form-control"
                             placeholder="Here can be your description"
-                            defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
+                            value={about}
+                            name='about'
+                            onChange={this.handleChange}
                           />
                         </FormGroup>
                       </Col>

@@ -460,7 +460,7 @@ class BiomechanicsForm extends Component {
 										ncols={["col-md-4", "col-md-4", "col-md-4"]}
 										properties={[
 											{
-												label: "createdAt",
+												label: "Date Tested",
 												type: "date",
 												bsClass: "form-control",
 												placeholder: "Date Added",
@@ -489,7 +489,7 @@ class BiomechanicsForm extends Component {
 										]}
 										/>
 										<FormInputs
-										ncols={["col-md-4", "col-md-4", "col-md-4"]}
+										ncols={["col-md-4", "col-md-4",]}
 										properties={[
 											{
 												label: "diabetes",
@@ -509,15 +509,15 @@ class BiomechanicsForm extends Component {
 												name: 'waistCircumference',
 												onChange: this.handleChange
 											},
-											{
-												label: "",
-												type: "number",
-												bsClass: "form-control",
-												placeholder: "TimeUpGo",
-												value: 0,
-												name: 'timeUpGo',
-												onChange: this.handleChange
-											}
+											// {
+											// 	label: "",
+											// 	type: "number",
+											// 	bsClass: "form-control",
+											// 	placeholder: "TimeUpGo",
+											// 	value: 0,
+											// 	name: 'timeUpGo',
+											// 	onChange: this.handleChange
+											// }
 										]}
 										/>
 										<Row>

@@ -24,6 +24,7 @@ import Maps from "views/Maps.jsx";
 import Notifications from "views/Notifications.jsx";
 import BiomechanicsForm from "views/BiomechanicsForm.jsx";
 import Upgrade from "views/Upgrade.jsx";
+import SignIn from "components/auth/SignIn.js"
 
 const dashboardRoutes = [
   {
@@ -59,13 +60,6 @@ const dashboardRoutes = [
   //   name: "Icons",
   //   icon: "pe-7s-science",
   //   component: Icons,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/maps",
-  //   name: "Maps",
-  //   icon: "pe-7s-map-marker",
-  //   component: Maps,
   //   layout: "/admin"
   // },
   // {

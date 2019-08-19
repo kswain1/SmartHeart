@@ -19,12 +19,17 @@ class Firebase {
         this.emailAuthProvider = app.auth.EmailAuthProvider;
 
         this.db = app.firestore();
+        this.auth = app.auth();
+        this.googleAuthProvider = new app.auth.GoogleAuthProvider(); 
     }
 
     firestoreDB = () => this.db;
     firestoreCollection = (col) => this.db.collection(col);
     enrollmentForms = () => this.db.collection(`enrollmentForm`);
     weeklyIntake = () => this.db.collection('weeklyIntake');
+    doSignInWithGoogle = () => this.auth.signInWithPopup(this.googleAuthProvider);
+    doCreateUserWithEmailAndPassword = (email, password) => this.auth.createUserWithEmailAndPassword(email, password);
+    doSignInWithEmailAndPassword = (email, password) => this.auth.signInWithEmailAndPassword(email, password);
     weeklyIntakeSummary = () => this.weeklyIntake().doc("summary");
     weeklyIntakeSummaryData = () => this.weeklyIntakeSummary().collection("data");
 };

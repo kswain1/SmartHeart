@@ -41,13 +41,13 @@ const dashboardRoutes = [
     component: UserProfile,
     layout: "/admin"
   },
-  {
-    path: "/table",
-    name: "Table List",
-    icon: "pe-7s-note2",
-    component: TableList,
-    layout: "/admin"
-  },
+  // {
+  //   path: "/table",
+  //   name: "Table List",
+  //   icon: "pe-7s-note2",
+  //   component: TableList,
+  //   layout: "/admin"
+  // },
   {
     path: "/biomechanics",
     name: "Biomechanics Form",
@@ -63,28 +63,12 @@ const dashboardRoutes = [
   //   layout: "/admin"
   // },
   // {
-  //   path: "/maps",
-  //   name: "Maps",
-  //   icon: "pe-7s-map-marker",
-  //   component: Maps,
+  //   path: "/notifications",
+  //   name: "Notifications",
+  //   icon: "pe-7s-bell",
+  //   component: Notifications,
   //   layout: "/admin"
   // },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "pe-7s-bell",
-    component: Notifications,
-    layout: "/admin"
-  },
-
-  {
-    path: "/signin",
-    name: "SignIn",
-    icon: "pe-7s-user",
-    component: SignIn,
-    layout: "/"
-
-  },
   // {
   //   upgrade: true,
   //   path: "/upgrade",

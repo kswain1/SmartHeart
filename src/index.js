@@ -40,7 +40,6 @@ ReactDOM.render(
           <Route exact path="/" component={SignIn} />
           <Route path="/signup" component={SignUp} />
           <Route path="/admin" render={props => <AdminLayout {...props} />} />
-          // <Route path="/" render={props => <GuestLayout {...props} /> } />
     </Switch>
     </FirebaseContext.Provider>
   </BrowserRouter>,

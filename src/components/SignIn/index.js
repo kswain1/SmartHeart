@@ -10,6 +10,7 @@ const initState = {
   email: '',
   password: '',
   error: null,
+  loginSuccessful: false
 };
 
 const SignInPage = () => (
@@ -51,18 +52,24 @@ class SignInFormBase extends Component {
   };
 
   handleGoogleLogin = () => {
+    const _this = this;
     this.props.firebase.doSignInWithGoogle().then(res => {
       console.log('google sign ssuccess', res);
       localStorage.setItem('uid', res.user.uid);
       localStorage.setItem('token', res.credential.idToken);
-      this.props.history.push('/admin/dashboard');
+      //this.props.history.push('/admin/dashboard');
+      return _this.setState({loginSuccessful: true});
     }).catch(err => console.log('google errr login', err))
   }
 
   render() {
-    const { email, password, error } = this.state;
+    const { email, password, error, loginSuccessful } = this.state;
 
     const isInvalid = password === '' || email === '';
+
+    if(loginSuccessful){
+      return window.location.href = '/admin/dashboard';
+    }
 
     return (
       <div className="container">

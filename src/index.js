@@ -20,6 +20,7 @@ import ReactDOM from "react-dom";
 
 
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import ProtectedRoute from './protectedroutes';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/animate.min.css";
@@ -39,7 +40,7 @@ ReactDOM.render(
     <Switch>
           <Route exact path="/" component={SignIn} />
           <Route path="/signup" component={SignUp} />
-          <Route path="/admin" render={props => <AdminLayout {...props} />} />
+          <ProtectedRoute path="/admin" component={props => <AdminLayout {...props} />} />
     </Switch>
     </FirebaseContext.Provider>
   </BrowserRouter>,

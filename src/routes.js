@@ -24,6 +24,7 @@ import Maps from "views/Maps.jsx";
 import Notifications from "views/Notifications.jsx";
 import BiomechanicsForm from "views/BiomechanicsForm.jsx";
 import Upgrade from "views/Upgrade.jsx";
+import SignIn from "components/auth/SignIn.js"
 
 const dashboardRoutes = [
   {
@@ -40,13 +41,13 @@ const dashboardRoutes = [
     component: UserProfile,
     layout: "/admin"
   },
-  {
-    path: "/table",
-    name: "Table List",
-    icon: "pe-7s-note2",
-    component: TableList,
-    layout: "/admin"
-  },
+  // {
+  //   path: "/table",
+  //   name: "Table List",
+  //   icon: "pe-7s-note2",
+  //   component: TableList,
+  //   layout: "/admin"
+  // },
   {
     path: "/biomechanics",
     name: "Biomechanics Form",
@@ -62,19 +63,12 @@ const dashboardRoutes = [
   //   layout: "/admin"
   // },
   // {
-  //   path: "/maps",
-  //   name: "Maps",
-  //   icon: "pe-7s-map-marker",
-  //   component: Maps,
+  //   path: "/notifications",
+  //   name: "Notifications",
+  //   icon: "pe-7s-bell",
+  //   component: Notifications,
   //   layout: "/admin"
   // },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "pe-7s-bell",
-    component: Notifications,
-    layout: "/admin"
-  },
   // {
   //   upgrade: true,
   //   path: "/upgrade",

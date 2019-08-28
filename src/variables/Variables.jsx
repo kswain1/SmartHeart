@@ -496,7 +496,7 @@ var dataPie = {
   series: [40, 20, 40]
 };
 var legendPie = {
-  names: ["Phase 1", "Phase 2", "Phase 3"],
+  names: ["Low Risk", "Mid Risk", "High Risk"],
   types: ["info", "danger", "warning"]
 };
 
@@ -518,7 +518,7 @@ var dataSales = {
 };
 var optionsSales = {
   low: 0,
-  high: 10,
+  high: 220,
   showArea: false,
   height: "245px",
   axisX: {

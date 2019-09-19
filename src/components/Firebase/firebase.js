@@ -20,7 +20,7 @@ class Firebase {
 
         this.db = app.firestore();
         this.auth = app.auth();
-        this.googleAuthProvider = new app.auth.GoogleAuthProvider(); 
+        this.googleAuthProvider = new app.auth.GoogleAuthProvider();
     }
 
     firestoreDB = () => this.db;
@@ -31,7 +31,8 @@ class Firebase {
     doCreateUserWithEmailAndPassword = (email, password) => this.auth.createUserWithEmailAndPassword(email, password);
     doSignInWithEmailAndPassword = (email, password) => this.auth.signInWithEmailAndPassword(email, password);
     weeklyIntakeSummary = () => this.weeklyIntake().doc("summary");
-    weeklyIntakeSummaryData = () => this.weeklyIntakeSummary().collection("data");
+    //weeklyIntakeSummaryData = () => this.weeklyIntakeSummary().collection("data");
+    weeklyIntakeSummaryData = () => this.weeklyIntake().doc("summary").collection("data");
 };
 
 export default Firebase;

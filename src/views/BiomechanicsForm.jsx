@@ -31,6 +31,7 @@ import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
 import {withFirebase} from '../components/Firebase';
+import { CreateBioMechanicsData } from '../components/Firebase/helper.js';
 
 import avatar from "assets/img/faces/face-3.jpg";
 
@@ -136,6 +137,7 @@ class BiomechanicsForm extends Component {
 	 * It's sole purpose is to update the weeklyIntake aggregation summary.
 	 * DO NOT DELETE
 	 */
+	/*
 	CreateBioMechanicsData = (data) => {
 
 		var WeeklySummaryDoc = this.props.firebase.weeklyIntakeSummary();
@@ -278,7 +280,7 @@ class BiomechanicsForm extends Component {
                 transaction.set(summaryDataRef, { ...data });
             })
         });
-    }
+    }*/
 
 
 		// High blood pressure (2 pts.) bp >= 190 = 2 else x = 0
@@ -336,7 +338,7 @@ class BiomechanicsForm extends Component {
 
 		this.setState(initalState, async () => {
 			//submit form data to firestore and update summary
-			const result = await this.CreateBioMechanicsData(formData);
+			const result = await CreateBioMechanicsData(formData);
 			console.log("Result", result);
 		});
 	};

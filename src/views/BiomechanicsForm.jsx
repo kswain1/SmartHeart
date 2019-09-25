@@ -95,25 +95,39 @@ class BiomechanicsForm extends Component {
 				bmi: Number(0),
 				heartRate: Number(0),
 				weight: Number(0),
-				heartSmartScale: Number(0)
+				heartSmartScale: Number(0),
+				physicalActivity: Number(0),
+				bloodPressure: Number(0),
+				waistCircumference: Number(0),
+
 			},
 			average: {
 				bmi: Number(0),
 				heartRate: Number(0),
 				weight: Number(0),
-				heartSmartScale: Number(0)
+				heartSmartScale: Number(0),
+				physicalActivity: Number(0),
+				bloodPressure: Number(0),
+				waistCircumference: Number(0),
 			},
 			entryCount: {
 				bmi: Number(0),
 				heartRate: Number(0),
 				weight: Number(0),
-				heartSmartScale: Number(0)
+				heartSmartScale: Number(0),
+				physicalActivity: Number(0),
+				bloodPressure: Number(0),
+				waistCircumference: Number(0),
 			},
 			heartSmartRisk: {
 				total: Number(0),
 				lowRisk: Number(0),
 				midRisk: Number(0),
 				highRisk: Number(0),
+				physicalActivity: Number(0),
+				bloodPressure: Number(0),
+				waistCircumference: Number(0),
+
 			},
 			yearlyAverage: {}
 		}).then(res => {
@@ -157,6 +171,9 @@ class BiomechanicsForm extends Component {
                 var BMI = Number(data.bmi);
 								var HeartRate = Number(data.heartRate);
 								var Weight = Number(data.weight);
+								var PhysicalActivity  = Number(data.physicalActivity);
+								var BloodPressure = Number(data.bloodPressure);
+								var WaistCircumference = Number(data.waistCircumference);
                 var dateCreated = data.createdAt;
 								var heartSmartRisk = data.heartSmartRisk;//lowRisk
 
@@ -166,27 +183,38 @@ class BiomechanicsForm extends Component {
 								var newTotalHeartSmartRisk = totalHeartSmartRiskData + 1;
 								var newHeartSmartRisk = heartSmartRiskData[heartSmartRisk] + 1;
 
-                //get count of BMI entries
+                //get count entries
 								var entryCounts = res.data().entryCount;
                 var bmiEntryCount = entryCounts.bmi;
 								var heartRateEntryCount = entryCounts.heartRate;
 								var weightEntryCount = entryCounts.weight;
+								var physicalActivityEntryCount = entryCounts.physicalActivity;
+								var bloodPressureCount = entryCounts.bloodPressure;
+								var waistCircumferenceCount = entryCounts.waistCircumference;
 
 								var newBmiEntryCount = bmiEntryCount + 1;
 								var newHeartRateEntryCount = heartRateEntryCount + 1;
 								var newWeightEntryCount = weightEntryCount + 1;
+								var newPhysicalActivityEntryCount = physicalActivityEntryCount + 1;
+								var newBloodPressureCount = bloodPressureCount + 1;
+								var newWaistCircumferenceCount = waistCircumferenceCount + 1;
 
                 //compute total BMI
 								var total = res.data().total;
                 var newTotalBMI = total.bmi + BMI;
 								var newTotalHeartRate = total.heartRate + HeartRate;
 								var newTotalWeight = total.weight + Weight;
+								var newTotalPhysicalActivity = total.physicalActivity + PhysicalActivity;
+								var newTotalBloodPressure = total.bloodPressure + BloodPressure;
+								var newTotalWaistCircumference = total.waistCircumference + WaistCircumference;
 
                 // Compute new average BMI
                 var newAverageBMI = newTotalBMI / newBmiEntryCount;
 								var newAverageHeartRate = newTotalHeartRate / newHeartRateEntryCount;
 								var newAverageWeight = newTotalWeight / newWeightEntryCount;
-
+								var newAveragePhysicalActivity = newTotalPhysicalActivity / newPhysicalActivityEntryCount;
+								var newAverageBloodPressure = newTotalBloodPressure / newBloodPressureCount;
+								var newAverageWaistCircumference = newTotalWaistCircumference / newWaistCircumferenceCount;
 
                 //set yearly average
                 var yearlyAverage = res.data().yearlyAverage;
@@ -196,17 +224,26 @@ class BiomechanicsForm extends Component {
 										count: {
 											bmi: 0,
 											heartRate: 0,
-											weight: 0
+											weight: 0,
+											physicalActivity: 0,
+											bloodPressure: 0,
+											waistCircumference: 0,
 										},
 										average: {
 											bmi: 0,
 											heartRate: 0,
-											weight: 0
+											weight: 0,
+											physicalActivity: 0,
+											bloodPressure: 0,
+											waistCircumference: 0,
 										},
 										total: {
 											bmi: 0,
 											heartRate: 0,
-											weight: 0
+											weight: 0,
+											physicalActivity: 0,
+											bloodPressure: 0,
+											waistCircumference: 0,
 										},
 								};
 
@@ -227,6 +264,18 @@ class BiomechanicsForm extends Component {
                 var newWeeklyWeightTotal = weeklyTotal.weight + Weight;
                 var newWeeklyWeightAvg = newWeeklyWeightTotal / newWeeklyWeightCount;
 
+								var newWeeklyPhysicalActivityCount = weeklyCount.physicalActivity + 1;
+                var newWeeklyPhysicalActivityTotal = weeklyTotal.physicalActivity + PhysicalActivity;
+                var newWeeklyPhysicalActivityAvg = newWeeklyPhysicalActivityTotal / newWeeklyPhysicalActivityCount;
+
+								var newWeeklyBloodPressureCount = weeklyCount.bloodPressure + 1;
+                var newWeeklyBloodPressureTotal = weeklyTotal.bloodPressure + BloodPressure;
+                var newWeeklyBloodPressureAvg = newWeeklyBloodPressureTotal / newWeeklyBloodPressureCount;
+
+								var newWeeklyWaistCircumferenceCount = weeklyCount.waistCircumference + 1;
+                var newWeeklyWaistCircumferenceTotal = weeklyTotal.waistCircumference + WaistCircumference;
+                var newWeeklyWaistCircumferenceAvg = newWeeklyWaistCircumferenceTotal / newWeeklyWaistCircumferenceCount;
+
                 var newYearlyAverage = {
                     ...yearlyAverage,
                     [`${year}`]: {
@@ -235,17 +284,26 @@ class BiomechanicsForm extends Component {
                             count: {
 															bmi: newWeeklyBMICount,
 															heartRate: newWeeklyHeartRateCount,
-															weight: newWeeklyWeightCount
+															weight: newWeeklyWeightCount,
+															physicalActivity: newWeeklyPhysicalActivityCount,
+															bloodPressure: newBloodPressureCount,
+															waistCircumference: newWaistCircumferenceCount,
 														},
                             average: {
 															bmi: newWeeklyBMIAvg,
 															heartRate: newWeeklyHeartRateAvg,
-															weight: newWeeklyWeightAvg
+															weight: newWeeklyWeightAvg,
+															physicalActivity: newWeeklyPhysicalActivityAvg,
+															bloodPressure: newWeeklyBloodPressureAvg,
+															waistCircumference: newWeeklyWaistCircumferenceAvg,
 														},
                             total: {
 															bmi: newWeeklyBMITotal,
 															heartRate: newWeeklyHeartRateTotal,
-															weight: newWeeklyWeightTotal
+															weight: newWeeklyWeightTotal,
+															physicalActivity: newWeeklyPhysicalActivityTotal,
+															bloodPressure: newWeeklyBloodPressureTotal,
+															waistCircumference: newWeeklyWaistCircumferenceTotal,
 														},
                         }
                     }
@@ -256,17 +314,26 @@ class BiomechanicsForm extends Component {
 										total: {
 											bmi: newTotalBMI,
 											heartRate: newTotalHeartRate,
-											weight: newTotalWeight
+											weight: newTotalWeight,
+											physicalActivity: newTotalPhysicalActivity,
+											bloodPressure: newTotalBloodPressure,
+											waistCircumference: newTotalWaistCircumference,
 										},
 										average: {
 											bmi: newAverageBMI,
 											heartRate: newAverageHeartRate,
-											weight: newAverageWeight
+											weight: newAverageWeight,
+											physicalActivity: newAveragePhysicalActivity,
+											bloodPressure: newAveragePhysicalActivity,
+											waistCircumference: newAverageWaistCircumference,
 										},
 										entryCount: {
 											bmi: newBmiEntryCount,
 											heartRate: newHeartRateEntryCount,
-											weight: newWeightEntryCount
+											weight: newWeightEntryCount,
+											physicalActivity: newPhysicalActivityEntryCount,
+											bloodPressure: newBloodPressureCount,
+											waistCircumference: newWaistCircumferenceCount,
 										},
 										heartSmartRisk: {
 											...heartSmartRiskData,

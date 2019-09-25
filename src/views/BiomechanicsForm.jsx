@@ -405,8 +405,14 @@ class BiomechanicsForm extends Component {
 
 		this.setState(initalState, async () => {
 			//submit form data to firestore and update summary
-			const result = await CreateBioMechanicsData(formData);
-			console.log("Result", result);
+			/*const result = await CreateBioMechanicsData(formData);
+			console.log("Result", result);*/
+			this.props.firebase.createBioMechanicsData(formData)
+			.then(result => {
+				console.log("Result", result)
+			}).catch(err => {
+				console.log("Error", err)
+			})
 		});
 	};
 

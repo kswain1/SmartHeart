@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 
 import { SignUpURL } from '../SignUp';
 import { withFirebase } from '../Firebase';
+import './SignIn.scss'
 
 
 const initState = {
@@ -16,7 +17,7 @@ const initState = {
 const SignInPage = () => (
   <div>
     <SignInForm />
-    <SignUpURL />
+
   </div>
 );
 
@@ -72,41 +73,49 @@ class SignInFormBase extends Component {
     }
 
     return (
-      <div className="container">
-      <form onSubmit={this.onSubmit} className="form-signin" role="form">
-      <h2 className="form-signin-heading">Heart Smart Sign In</h2>
-      <div className="input-field">
-        <input
-          name="email"
-          value={email}
-          onChange={this.onChange}
-          type="email"
-          placeholder="Email Address"
-          className="form-control"
-        />
+      <Fragment>
+      <div className="loginheader">
+        <div className="logo text-center">
+          <img src="/heartLogo.png" height="50"/>
         </div>
-        <input
-          name="password"
-          value={password}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Password"
-          className="form-control"
-        />
-        <button type="submit" className="btn btn-lg btn-primary btn-block orange">
-          Sign In
-        </button>
-
-        <button onClick={this.handleGoogleLogin} className="btn btn-lg btn-primary btn-block btn-danger">
-          Login With Google
-        </button>
-        {error && <p>{error.message}</p>}
-      </form>
-
-      <div className="container">
-
+        <div className="title col-md-6">
+          <h2></h2>
+        </div>
       </div>
+      <div className="loginbg">
+        <div className="container">
+          <form onSubmit={this.onSubmit} className="form-signin" role="form">
+          <h2 className="form-signin-heading text-center">Sign In</h2>
+          <div className="input-field">
+            <input
+              name="email"
+              value={email}
+              onChange={this.onChange}
+              type="email"
+              placeholder="Email Address"
+              className="form-control"
+            />
+            </div>
+            <input
+              name="password"
+              value={password}
+              onChange={this.onChange}
+              type="password"
+              placeholder="Password"
+              className="form-control"
+            />
+            <button type="submit" className="btn btn-lg btn-primary btn-block orange">
+              Sign In
+            </button>
+
+            <button onClick={this.handleGoogleLogin} className="btn btn-lg btn-primary btn-block btn-danger">
+              Login With Google
+            </button>
+            {error && <p>{error.message}</p>}
+          </form>
+        </div>
       </div>
+      </Fragment>
     );
   }
 }

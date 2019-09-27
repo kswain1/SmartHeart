@@ -31,7 +31,6 @@ import { FormInputs } from "components/FormInputs/FormInputs.jsx";
 import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
 import {withFirebase} from '../components/Firebase';
-import { CreateBioMechanicsData } from '../components/Firebase/helper.js';
 
 import avatar from "assets/img/faces/face-3.jpg";
 
@@ -63,7 +62,7 @@ class BiomechanicsForm extends Component {
 
 	componentDidMount(){
 		//this.DeleteDocumentsInWeeklyIntake();
-		//this.InitializeWeeklyIntake();
+	    //this.InitializeWeeklyIntake();
 		this.GetAllWeeklyIntake();
 	}
 
@@ -132,7 +131,9 @@ class BiomechanicsForm extends Component {
 			yearlyAverage: {}
 		}).then(res => {
 			console.log('res from initalize', res);
-		});
+		}).catch(err => {
+            console.log("Error", err);
+        });
 	}
 
 	/**

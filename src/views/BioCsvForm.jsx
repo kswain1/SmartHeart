@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CSVReader from 'react-csv-reader';
 import {withFirebase} from '../components/Firebase';
+import Button from "components/CustomButton/CustomButton.jsx";
 import './csvForm.scss';
 
 class BioCsv extends Component {
@@ -13,9 +14,9 @@ class BioCsv extends Component {
             if(index > 0){
                 physicalActivity = await this.physicalActivity(data[21]);
                 formdata = {
-                    createdAt: data[3],
+                    createdAt: data[4],
                     name: [data[1], data[2]].join(' '),
-                    dob: data[4],
+                    dob: data[3],
                     weight: Number(!isNaN(data[5]) ? data[5] : 0),
                     height: Number(!isNaN(data[6]) ? data[6] : 0),
                     bmi: Number(!isNaN(data[7]) ? data[7] : 0),
@@ -80,7 +81,11 @@ class BioCsv extends Component {
                     label="Select a CSV file"
                     onFileLoaded={this.handleCSVUpload}
                 />
+                <Button bsStyle="info" fill type="submit">
+                  Upload CSV
+                </Button>
             </div>
+
         )
     }
 }

@@ -62,7 +62,7 @@ class BiomechanicsForm extends Component {
 
 	componentDidMount(){
 		//this.DeleteDocumentsInWeeklyIntake();
-		//this.InitializeWeeklyIntake();
+	    //this.InitializeWeeklyIntake();
 		this.GetAllWeeklyIntake();
 	}
 
@@ -131,7 +131,9 @@ class BiomechanicsForm extends Component {
 			yearlyAverage: {}
 		}).then(res => {
 			console.log('res from initalize', res);
-		});
+		}).catch(err => {
+            console.log("Error", err);
+        });
 	}
 
 	/**
@@ -150,6 +152,7 @@ class BiomechanicsForm extends Component {
 	 * It's sole purpose is to update the weeklyIntake aggregation summary.
 	 * DO NOT DELETE
 	 */
+	/*
 	CreateBioMechanicsData = (data) => {
 
 		var WeeklySummaryDoc = this.props.firebase.weeklyIntakeSummary();
@@ -345,7 +348,7 @@ class BiomechanicsForm extends Component {
                 transaction.set(summaryDataRef, { ...data });
             })
         });
-    }
+    }*/
 
 
 		// High blood pressure (2 pts.) bp >= 190 = 2 else x = 0
@@ -403,8 +406,14 @@ class BiomechanicsForm extends Component {
 
 		this.setState(initalState, async () => {
 			//submit form data to firestore and update summary
-			const result = await this.CreateBioMechanicsData(formData);
-			console.log("Result", result);
+			/*const result = await CreateBioMechanicsData(formData);
+			console.log("Result", result);*/
+			this.props.firebase.createBioMechanicsData(formData)
+			.then(result => {
+				console.log("Result", result)
+			}).catch(err => {
+				console.log("Error", err)
+			})
 		});
 	};
 

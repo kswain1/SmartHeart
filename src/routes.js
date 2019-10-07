@@ -23,6 +23,7 @@ import Icons from "views/Icons.jsx";
 import Maps from "views/Maps.jsx";
 import Notifications from "views/Notifications.jsx";
 import BiomechanicsForm from "views/BiomechanicsForm.jsx";
+import BioCsv from "views/BioCsvForm.jsx";
 import Upgrade from "views/Upgrade.jsx";
 import SignIn from "components/auth/SignIn.js"
 
@@ -53,6 +54,13 @@ const dashboardRoutes = [
     name: "Biomechanics Form",
     icon: "pe-7s-news-paper",
     component: BiomechanicsForm,
+    layout: "/admin"
+  },
+  {
+    path: "/biocsv",
+    name: "Biomechancs File Upload",
+    icon: "pe-7x-news-paper",
+    component: BioCsv,
     layout: "/admin"
   },
   // {

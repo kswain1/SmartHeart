@@ -47,6 +47,9 @@ class Dashboard extends Component {
         averageBMI: 0,
         averageHeartRate: 0,
         averageWeight: 0,
+        averagePhysicalActivity: 0,
+        averageBloodPressure: 0,
+        averageWaistCircumference: 0,
         yearlyAverage: {},
         loading: false,
         currentyear: moment().year(),
@@ -56,6 +59,12 @@ class Dashboard extends Component {
         bmiSeriesValues: [],
         weightSeriesData: {},
         weightSeriesValues: [],
+        physicalActivitySeriesData: {},
+        physicalActivitySeriesValues: [],
+        waistCircumferenceSeriesData: {},
+        waistCircumferenceSeriesValues: [],
+        bloodPressureSeriesData: {},
+        bloodPressureSeriesValues: [],
         heartSmartRisk: null,
         heartSmartRiskSeriesData: {},
         heartSmartRiskSeriesValues: [],
@@ -97,6 +106,9 @@ class Dashboard extends Component {
                 averageBMI: this.ConvertToDecimal(average.bmi),
                 averageWeight: this.ConvertToDecimal(average.weight),
                 averageHeartRate: this.ConvertToDecimal(average.heartRate),
+                averagePhysicalActivity: this.ConvertToDecimal(average.physicalActivity),
+                averageBloodPressure: this.ConvertToDecimal(average.bloodPressure),
+                averageWaistCircumference: this.ConvertToDecimal(average.waistCircumference)
           }, () => {
             //computes data in form for graphs
             this.createHeartRateSeriesData();
@@ -104,6 +116,7 @@ class Dashboard extends Component {
             this.createWeightSeriesData();
             this.createHeartSmartSeriesData();
             this.checkHeartRateScale();
+            this.createPhysicalActivitySeriesData();
 
           })
         }
@@ -179,6 +192,25 @@ class Dashboard extends Component {
       this.setState({ weightSeriesData, weightSeriesValues })
     }
 
+    createPhysicalActivitySeriesData = () => {
+      const {currentYearData} = this.state;
+      const labels = currentYearData && Object.keys(currentYearData);
+      const values = currentYearData && Object.values(currentYearData);
+
+      const physicalActivitySeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+        return `${label}`;
+      });
+
+      const physicalActivitySeriesValues = values && values.length > 0 && values.map((value, index) => {
+        return value.average.physicalActivity;
+      });
+
+      const physicalActivityData = {
+        labels: physicalActivitySeriesLabels,
+        values: [physicalActivitySeriesValues, ]
+      }
+    }
+
     createHeartSmartSeriesData = () => {
       const { heartSmartRisk } = this.state;
       const labels = heartSmartRisk && Object.keys(heartSmartRisk);
@@ -229,7 +261,9 @@ class Dashboard extends Component {
         const { averageBMI, averageWeight, averageHeartRate, yearlyAverage,
            heartSeriesData, heartSeriesValues, currentyear, bmiSeriesData,
             bmiSeriesValues, weightSeriesData, weightSeriesValues ,
-            heartSmartRiskSeriesData, heartSmartRiskSeriesValues, heartSmartValue
+            heartSmartRiskSeriesData, heartSmartRiskSeriesValues, heartSmartValue,
+            averagePhysicalActivity, averageBloodPressure, averageWaistCircumference,
+            physicalActivitySeriesData, physicalActivitySeriesValues,
           } = this.state;
 
 
@@ -252,8 +286,8 @@ class Dashboard extends Component {
                         <Col lg={3} sm={6}>
                             <StatsCard
                                 bigIcon={<i className="pe-7s-like text-warning" />}
-                                statsText="Avg. Heart Rate"
-                                statsValue={averageHeartRate}
+                                statsText="Avg. Blood Pressure"
+                                statsValue={averageBloodPressure}
                                 statsIcon={<i className="fa fa-refresh" />}
                                 statsIconText="Updated now"
                             />
@@ -261,8 +295,8 @@ class Dashboard extends Component {
                         <Col lg={3} sm={6}>
                             <StatsCard
                                 bigIcon={<i className="pe-7s-smile text-success" />}
-                                statsText="Avg. BMI"
-                                statsValue={averageBMI}
+                                statsText="Avg. Physical Activity"
+                                statsValue={averagePhysicalActivity}
                                 statsIcon={<i className="fa fa-refresh" />}
                                 statsIconText="Last day"
                             />
@@ -270,8 +304,8 @@ class Dashboard extends Component {
                         <Col lg={3} sm={6}>
                             <StatsCard
                                 bigIcon={<i className="pe-7s-gleam text-danger" />}
-                                statsText="Avg. Weight"
-                                statsValue={averageWeight}
+                                statsText="Avg. Waist Circumference"
+                                statsValue={averageWaistCircumference}
                                 statsIcon={<i className="fa fa-clock-o" />}
                                 statsIconText="In the last hour"
                             />
@@ -284,7 +318,7 @@ class Dashboard extends Component {
                             <Card
                                 statsIcon="fa fa-history"
                                 id="chartHours"
-                                title="Heart Rate Chart"
+                                title="Physical Activity"
                                 category="12 week cohort performance"
                                 stats="Updated 3 minutes ago"
                                 content={

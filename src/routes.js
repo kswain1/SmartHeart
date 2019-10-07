@@ -58,8 +58,8 @@ const dashboardRoutes = [
   },
   {
     path: "/biocsv",
-    name: "Biomechancs File Upload",
-    icon: "pe-7x-news-paper",
+    name: "Bio File Upload",
+    icon: "pe-7s-album",
     component: BioCsv,
     layout: "/admin"
   },

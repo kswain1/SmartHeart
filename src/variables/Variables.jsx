@@ -497,7 +497,7 @@ var dataPie = {
 };
 var legendPie = {
   names: ["Low Risk", "Mid Risk", "High Risk"],
-  types: ["info", "danger", "warning"]
+  types: ["info", "warning", "danger"]
 };
 
 // Data for Line Chart
@@ -545,7 +545,7 @@ var responsiveSales = [
   ]
 ];
 var legendSales = {
-  names: ["Heart Smart Scale"],
+  names: ["Physical Activity"],
   types: ["info",]
 };
 
@@ -642,7 +642,7 @@ var responsiveBar = [
   ]
 ];
 var legendBar = {
-  names: ["Gait", "Heart Rate"],
+  names: ["Waist Circumference"],
   types: ["info", "danger"]
 };
 

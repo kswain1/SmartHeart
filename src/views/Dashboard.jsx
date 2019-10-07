@@ -48,7 +48,7 @@ class Dashboard extends Component {
         averageHeartRate: 0,
         averageWeight: 0,
         averagePhysicalActivity: 0,
-        averageBloodPressure: 0,
+        averageSBloodPressure: 0,
         averageWaistCircumference: 0,
         yearlyAverage: {},
         loading: false,
@@ -65,6 +65,8 @@ class Dashboard extends Component {
         waistCircumferenceSeriesValues: [],
         bloodPressureSeriesData: {},
         bloodPressureSeriesValues: [],
+        sBloodPressureSeriesData: {},
+        sBloodPressureSeriesValues: [],
         heartSmartRisk: null,
         heartSmartRiskSeriesData: {},
         heartSmartRiskSeriesValues: [],
@@ -107,16 +109,19 @@ class Dashboard extends Component {
                 averageWeight: this.ConvertToDecimal(average.weight),
                 averageHeartRate: this.ConvertToDecimal(average.heartRate),
                 averagePhysicalActivity: this.ConvertToDecimal(average.physicalActivity),
-                averageBloodPressure: this.ConvertToDecimal(average.bloodPressure),
-                averageWaistCircumference: this.ConvertToDecimal(average.waistCircumference)
+                averageBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
+                averageWaistCircumference: this.ConvertToDecimal(average.waistCircumference),
+                averageSBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
           }, () => {
             //computes data in form for graphs
             this.createHeartRateSeriesData();
             this.createBMISeriesData();
             this.createWeightSeriesData();
             this.createHeartSmartSeriesData();
+            this.createSBloodPressureSeriesData();
             this.checkHeartRateScale();
             this.createPhysicalActivitySeriesData();
+            this.createWaistCircumferenceSeriesData();
 
           })
         }
@@ -169,6 +174,29 @@ class Dashboard extends Component {
       this.setState({ bmiSeriesData, bmiSeriesValues })
     }
 
+    createWaistCircumferenceSeriesData = () => {
+      const { currentYearData } = this.state;
+      const labels = currentYearData && Object.keys(currentYearData);
+      const values = currentYearData && Object.values(currentYearData);
+
+      const waistCircumferenceSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+        return `${label}`;
+      });
+
+      const waistCircumferenceSeriesValues = values && values.length > 0 && values.map((value, index) => {
+        return value.average.waistCircumference;
+      });
+
+      const waistCircumferenceSeriesData = {
+        labels: waistCircumferenceSeriesLabels,
+        series: [ waistCircumferenceSeriesValues, ]
+      }
+
+      console.log('Waist Circumference', waistCircumferenceSeriesData);
+
+      this.setState({ waistCircumferenceSeriesData, waistCircumferenceSeriesValues })
+    }
+
     createWeightSeriesData = () => {
       const { currentYearData } = this.state;
       const labels = currentYearData && Object.keys(currentYearData);
@@ -190,6 +218,29 @@ class Dashboard extends Component {
       console.log('weight series data', weightSeriesData);
 
       this.setState({ weightSeriesData, weightSeriesValues })
+    }
+
+    createSBloodPressureSeriesData = () => {
+      const { currentYearData } = this.state;
+      const labels = currentYearData && Object.keys(currentYearData);
+      const values = currentYearData && Object.values(currentYearData);
+
+      const sBloodPressureSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+        return `${label}`;
+      });
+
+      const sBloodPressureSeriesValues = values && values.length > 0 && values.map((value, index) => {
+        return value.average.sBloodPressure;
+      });
+
+      const sBloodPressureSeriesData = {
+        labels: sBloodPressureSeriesLabels,
+        series: [ sBloodPressureSeriesValues, ]
+      }
+
+      console.log('sBloodPressure Series Data', sBloodPressureSeriesData);
+
+      this.setState({ sBloodPressureSeriesValues, sBloodPressureSeriesData })
     }
 
     createPhysicalActivitySeriesData = () => {
@@ -240,17 +291,16 @@ class Dashboard extends Component {
       var midRiskPercent = this.ConvertToDecimal((midRisk/total) * 100);
       var lowRiskPercent = this.ConvertToDecimal((lowRisk/total) * 100);
 
-      if (highRiskPercent >= midRiskPercent || highRisk >= lowRiskPercent) {
+      if (highRiskPercent >= midRiskPercent && highRisk >= lowRiskPercent) {
           console.log('High Risk')
           heartSmartValue = 'High Risk'
           this.setState({heartSmartValue})
         }
-      else if (midRiskPercent >= lowRiskPercent || midRiskPercent > highRiskPercent) {
-          console.log('Mid Risk')
+      else if (midRiskPercent >= lowRiskPercent && midRiskPercent > highRiskPercent) {
           heartSmartValue = 'Mid Risk'
           this.setState({heartSmartValue})
         }
-      else {
+      else if (lowRiskPercent > midRiskPercent){
         heartSmartValue = 'Low Risk'
         this.setState({heartSmartValue})
       }
@@ -264,6 +314,9 @@ class Dashboard extends Component {
             heartSmartRiskSeriesData, heartSmartRiskSeriesValues, heartSmartValue,
             averagePhysicalActivity, averageBloodPressure, averageWaistCircumference,
             physicalActivitySeriesData, physicalActivitySeriesValues,
+            waistCircumferenceSeriesData, waistCircumferenceSeriesLabels,
+            sBloodPressureSeriesData,
+
           } = this.state;
 
 
@@ -367,14 +420,14 @@ class Dashboard extends Component {
                         <Col md={6}>
                             <Card
                                 id="weightActivity"
-                                title="Weight Activity"
+                                title="Waist Circumference"
                                 category="Collective information from Cohort 1"
                                 stats="Data information certified"
                                 statsIcon="fa fa-check"
                                 content={
                                 <div className="ct-chart">
                                     <ChartistGraph
-                                    data={weightSeriesData}
+                                    data={waistCircumferenceSeriesData}
                                     type="Bar"
                                     options={optionsBar}
                                     responsiveOptions={responsiveBar}
@@ -391,14 +444,14 @@ class Dashboard extends Component {
                         <Col md={6}>
                           { bmiSeriesData && bmiSeriesValues && bmiSeriesValues.length > 0 &&
                             <Card
-                                title="BMI Activity Per Week"
+                                title="Blood Pressure Over Week"
                                 category="Cohort 1"
                                 stats="Updated 3 minutes ago"
                                 statsIcon="fa fa-history"
                                 content={
                                 <div className="ct-chart">
                                     <ChartistGraph
-                                        data={bmiSeriesData}
+                                        data={sBloodPressureSeriesData}
                                         type="Line"
                                         options={optionsPhysAct}
                                         responsiveOptions={responsivePhysAct}

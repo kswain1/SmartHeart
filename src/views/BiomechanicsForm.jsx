@@ -62,7 +62,7 @@ class BiomechanicsForm extends Component {
 
 	componentDidMount(){
 		//this.DeleteDocumentsInWeeklyIntake();
-	    //this.InitializeWeeklyIntake();
+	  //this.InitializeWeeklyIntake();
 		this.GetAllWeeklyIntake();
 	}
 
@@ -96,7 +96,8 @@ class BiomechanicsForm extends Component {
 				weight: Number(0),
 				heartSmartScale: Number(0),
 				physicalActivity: Number(0),
-				bloodPressure: Number(0),
+				sBloodPressure: Number(0),
+				dBloodPressure: Number(0),
 				waistCircumference: Number(0),
 
 			},
@@ -106,7 +107,8 @@ class BiomechanicsForm extends Component {
 				weight: Number(0),
 				heartSmartScale: Number(0),
 				physicalActivity: Number(0),
-				bloodPressure: Number(0),
+				sBloodPressure: Number(0),
+				dBloodPressure: Number(0),
 				waistCircumference: Number(0),
 			},
 			entryCount: {
@@ -115,7 +117,8 @@ class BiomechanicsForm extends Component {
 				weight: Number(0),
 				heartSmartScale: Number(0),
 				physicalActivity: Number(0),
-				bloodPressure: Number(0),
+				sBloodPressure: Number(0),
+				dBloodPressure: Number(0),
 				waistCircumference: Number(0),
 			},
 			heartSmartRisk: {
@@ -124,7 +127,8 @@ class BiomechanicsForm extends Component {
 				midRisk: Number(0),
 				highRisk: Number(0),
 				physicalActivity: Number(0),
-				bloodPressure: Number(0),
+				sBloodPressure: Number(0),
+				dBloodPressure: Number(0),
 				waistCircumference: Number(0),
 
 			},

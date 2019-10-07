@@ -54,7 +54,8 @@ class Firebase {
                     var HeartRate = Number(data.heartRate);
                     var Weight = Number(data.weight);
                     var PhysicalActivity  = Number(data.physicalActivity);
-                    var BloodPressure = Number(data.bloodPressure);
+                    var SbloodPressure = Number(data.sBloodPressure);
+                    var DbloodPressure = Number(data.dBloodPressure);
                     var WaistCircumference = Number(data.waistCircumference);
                     var dateCreated = data.createdAt || new Date();
                     var heartSmartRisk = data.heartSmartRisk;//lowRisk
@@ -71,14 +72,16 @@ class Firebase {
                     var heartRateEntryCount = entryCounts.heartRate;
                     var weightEntryCount = entryCounts.weight;
                     var physicalActivityEntryCount = entryCounts.physicalActivity;
-                    var bloodPressureCount = entryCounts.bloodPressure;
+                    var sBloodPressureCount = entryCounts.sBloodPressure;
+                    var dBloodPressureCount = entryCounts.dBloodPressure;
                     var waistCircumferenceCount = entryCounts.waistCircumference;
 
                     var newBmiEntryCount = bmiEntryCount + 1;
                     var newHeartRateEntryCount = heartRateEntryCount + 1;
                     var newWeightEntryCount = weightEntryCount + 1;
                     var newPhysicalActivityEntryCount = physicalActivityEntryCount + 1;
-                    var newBloodPressureCount = bloodPressureCount + 1;
+                    var newSBloodPressureCount = sBloodPressureCount + 1;
+                    var newDBloodPressureCount = dBloodPressureCount + 1;
                     var newWaistCircumferenceCount = waistCircumferenceCount + 1;
 
                     //compute total BMI
@@ -87,7 +90,8 @@ class Firebase {
                     var newTotalHeartRate = total.heartRate + HeartRate;
                     var newTotalWeight = total.weight + Weight;
                     var newTotalPhysicalActivity = total.physicalActivity + PhysicalActivity;
-                    var newTotalBloodPressure = total.bloodPressure + BloodPressure;
+                    var newTotalSBloodPressure = total.sBloodPressure + SbloodPressure;
+                    var newTotalDBloodPressure = total.dBloodPressure + DbloodPressure;
                     var newTotalWaistCircumference = total.waistCircumference + WaistCircumference;
 
                     // Compute new average BMI
@@ -95,7 +99,8 @@ class Firebase {
                     var newAverageHeartRate = newTotalHeartRate / newHeartRateEntryCount;
                     var newAverageWeight = newTotalWeight / newWeightEntryCount;
                     var newAveragePhysicalActivity = newTotalPhysicalActivity / newPhysicalActivityEntryCount;
-                    var newAverageBloodPressure = newTotalBloodPressure / newBloodPressureCount;
+                    var newAverageSBloodPressure = newTotalSBloodPressure / newSBloodPressureCount;
+                    var newAverageDBloodPressure = newTotalDBloodPressure / newDBloodPressureCount;
                     var newAverageWaistCircumference = newTotalWaistCircumference / newWaistCircumferenceCount;
 
                     //set yearly average
@@ -108,7 +113,8 @@ class Firebase {
                             heartRate: 0,
                             weight: 0,
                             physicalActivity: 0,
-                            bloodPressure: 0,
+                            sBloodPressure: 0,
+                            dBloodPressure: 0,
                             waistCircumference: 0,
                         },
                         average: {
@@ -116,7 +122,8 @@ class Firebase {
                             heartRate: 0,
                             weight: 0,
                             physicalActivity: 0,
-                            bloodPressure: 0,
+                            sBloodPressure: 0,
+                            dBloodPressure: 0,
                             waistCircumference: 0,
                         },
                         total: {
@@ -124,7 +131,8 @@ class Firebase {
                             heartRate: 0,
                             weight: 0,
                             physicalActivity: 0,
-                            bloodPressure: 0,
+                            sBloodPressure: 0,
+                            dBloodPressure: 0,
                             waistCircumference: 0,
                         },
                     };
@@ -150,9 +158,14 @@ class Firebase {
                     var newWeeklyPhysicalActivityTotal = weeklyTotal.physicalActivity + PhysicalActivity;
                     var newWeeklyPhysicalActivityAvg = newWeeklyPhysicalActivityTotal / newWeeklyPhysicalActivityCount;
 
-                    var newWeeklyBloodPressureCount = weeklyCount.bloodPressure + 1;
-                    var newWeeklyBloodPressureTotal = weeklyTotal.bloodPressure + BloodPressure;
-                    var newWeeklyBloodPressureAvg = newWeeklyBloodPressureTotal / newWeeklyBloodPressureCount;
+                    var newWeeklySBloodPressureCount = weeklyCount.sBloodPressure + 1;
+                    var newWeeklySBloodPressureTotal = weeklyTotal.sBloodPressure + SbloodPressure;
+                    var newWeeklySBloodPressureAvg = newWeeklySBloodPressureTotal / newWeeklySBloodPressureCount;
+
+                    var newWeeklyDBloodPressureCount = weeklyCount.dBloodPressure + 1;
+                    var newWeeklyDBloodPressureTotal = weeklyTotal.dBloodPressure + DbloodPressure;
+                    var newWeeklyDBloodPressureAvg = newWeeklyDBloodPressureTotal / newWeeklyDBloodPressureCount;
+                    console.log("LINE 172", newWeeklyDBloodPressureAvg);
 
                     var newWeeklyWaistCircumferenceCount = weeklyCount.waistCircumference + 1;
                     var newWeeklyWaistCircumferenceTotal = weeklyTotal.waistCircumference + WaistCircumference;
@@ -168,7 +181,8 @@ class Firebase {
                                     heartRate: newWeeklyHeartRateCount,
                                     weight: newWeeklyWeightCount,
                                     physicalActivity: newWeeklyPhysicalActivityCount,
-                                    bloodPressure: newBloodPressureCount,
+                                    sBloodPressure: newSBloodPressureCount,
+                                    dBloodPressure: newDBloodPressureCount,
                                     waistCircumference: newWaistCircumferenceCount,
                                 },
                                 average: {
@@ -176,7 +190,8 @@ class Firebase {
                                     heartRate: newWeeklyHeartRateAvg,
                                     weight: newWeeklyWeightAvg,
                                     physicalActivity: newWeeklyPhysicalActivityAvg,
-                                    bloodPressure: newWeeklyBloodPressureAvg,
+                                    sBloodPressure: newWeeklySBloodPressureAvg,
+                                    dBloodPressure: newWeeklyDBloodPressureAvg,
                                     waistCircumference: newWeeklyWaistCircumferenceAvg,
                                 },
                                 total: {
@@ -184,7 +199,8 @@ class Firebase {
                                     heartRate: newWeeklyHeartRateTotal,
                                     weight: newWeeklyWeightTotal,
                                     physicalActivity: newWeeklyPhysicalActivityTotal,
-                                    bloodPressure: newWeeklyBloodPressureTotal,
+                                    sBloodPressure: newWeeklySBloodPressureTotal,
+                                    dBloodPressure: newWeeklyDBloodPressureTotal,
                                     waistCircumference: newWeeklyWaistCircumferenceTotal,
                                 },
                             }
@@ -198,7 +214,8 @@ class Firebase {
                             heartRate: newTotalHeartRate,
                             weight: newTotalWeight,
                             physicalActivity: newTotalPhysicalActivity,
-                            bloodPressure: newTotalBloodPressure,
+                            sBloodPressure: newTotalSBloodPressure,
+                            dDloodPressure: newTotalDBloodPressure,
                             waistCircumference: newTotalWaistCircumference,
                         },
                         average: {
@@ -206,7 +223,8 @@ class Firebase {
                             heartRate: newAverageHeartRate,
                             weight: newAverageWeight,
                             physicalActivity: newAveragePhysicalActivity,
-                            bloodPressure: newAveragePhysicalActivity,
+                            sBloodPressure: newAverageSBloodPressure,
+                            dBloodPressure: newAverageDBloodPressure,
                             waistCircumference: newAverageWaistCircumference,
                         },
                         entryCount: {
@@ -214,7 +232,8 @@ class Firebase {
                             heartRate: newHeartRateEntryCount,
                             weight: newWeightEntryCount,
                             physicalActivity: newPhysicalActivityEntryCount,
-                            bloodPressure: newBloodPressureCount,
+                            sBloodPressure: newSBloodPressureCount,
+                            dBloodPressure: newDBloodPressureCount,
                             waistCircumference: newWaistCircumferenceCount,
                         },
                         heartSmartRisk: {

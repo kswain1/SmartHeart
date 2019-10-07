@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import CSVReader from 'react-csv-reader';
 import {withFirebase} from '../components/Firebase';
 import Button from "components/CustomButton/CustomButton.jsx";
+import { generateHeartSmartRisk, generateHeartSmartScale } from '../helper/functions';
 import './csvForm.scss';
 
 class BioCsv extends Component {
@@ -19,11 +20,12 @@ class BioCsv extends Component {
       if(window.confirm("Do you want to proceed uploading data?")){
         let { csvData } = this.state;
           let heartSmartData = [];
-          let formdata, physicalActivity;
+          let formdata, physicalActivity, heartSmartScale, heartSmartRisk, bloodPressure;
           await csvData.forEach(async (data, index) => {
               //skip the first line of the CSV data
               if(index > 0){
                   physicalActivity = await this.physicalActivity(data[21]);
+                  bloodPressure = this.getBloodPressure(data[9]);
                   formdata = {
                       createdAt: data[4],
                       name: {
@@ -35,7 +37,8 @@ class BioCsv extends Component {
                       height: Number(!isNaN(data[6]) ? data[6] : 0),
                       bmi: Number(!isNaN(data[7]) ? data[7] : 0),
                       waistCircumference: Number(!isNaN(data[8]) ? data[8] : 0),
-                      bloodPressure: Number(!isNaN(data[9]) ? data[9] : 0),
+                      sBloodPressure: bloodPressure.sBloodPressure,
+                      dBloodPressure: bloodPressure.dBloodPressure,
                       leftLegLength: Number(!isNaN(data[10]) ? data[10] : 0),
                       rightLegLength: Number(!isNaN(data[11]) ? data[11] : 0),
                       timeUpGoOne: Number(!isNaN(data[12]) ? data[12] : 0),
@@ -54,7 +57,13 @@ class BioCsv extends Component {
                       smokedHundredCigarettes: (data[25] == 'Yes') ? true : false,
 
                   };
-                  //console.log("Form data", formdata);
+
+                  heartSmartScale = generateHeartSmartScale(formdata);
+              		heartSmartRisk = generateHeartSmartRisk(heartSmartScale);
+                  formdata.heartSmartScale = heartSmartScale;
+              		formdata.heartSmartRisk = heartSmartRisk;
+
+                  console.log("Form data", formdata);
                   heartSmartData.push(formdata);
               }
           });
@@ -70,6 +79,16 @@ class BioCsv extends Component {
           });
       }
       return false;
+    }
+
+    getBloodPressure = (data) => {
+      const result  = data.split("/");
+      const
+        sBloodPressure = result.length && result[0] ? Number(!isNaN(result[0]) ? result[0] : 0) : Number(0),
+        dBloodPressure = result.length  && result[1]? Number(!isNaN(result[1]) ? result[1] : 0) : Number(0);
+      return {
+        sBloodPressure, dBloodPressure
+      }
     }
 
     physicalActivity = (totalPhysicalActivity) => {

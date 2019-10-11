@@ -165,7 +165,6 @@ class Firebase {
                     var newWeeklyDBloodPressureCount = weeklyCount.dBloodPressure + 1;
                     var newWeeklyDBloodPressureTotal = weeklyTotal.dBloodPressure + DbloodPressure;
                     var newWeeklyDBloodPressureAvg = newWeeklyDBloodPressureTotal / newWeeklyDBloodPressureCount;
-                    console.log("LINE 172", newWeeklyDBloodPressureAvg);
 
                     var newWeeklyWaistCircumferenceCount = weeklyCount.waistCircumference + 1;
                     var newWeeklyWaistCircumferenceTotal = weeklyTotal.waistCircumference + WaistCircumference;
@@ -215,7 +214,7 @@ class Firebase {
                             weight: newTotalWeight,
                             physicalActivity: newTotalPhysicalActivity,
                             sBloodPressure: newTotalSBloodPressure,
-                            dDloodPressure: newTotalDBloodPressure,
+                            dBloodPressure: newTotalDBloodPressure,
                             waistCircumference: newTotalWaistCircumference,
                         },
                         average: {

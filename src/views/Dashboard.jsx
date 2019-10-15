@@ -126,184 +126,260 @@ class Dashboard extends Component {
           })
         }
       });
-	}
+    }
+    
+    //general function to create chart series data
+    generateChartData = ({data, labelPrefix = '', identifier, labelsIdentifier, valuesIdentifier}) => {
+        const labels = data && Object.keys(data);
+        const values = data && Object.values(data);
+
+        const seriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+            return `${labelPrefix} ${label}`;
+        });
+
+        const seriesValues = values && values.length > 0 && values.map((value, index) => {
+            return value.average[identifier];
+        });
+
+        const seriesData = {
+            labels: seriesLabels,
+            series: [ seriesValues, ]
+        }
+
+        console.log(`${identifier} Series data === `, seriesData);
+
+        this.setState({ 
+            [labelsIdentifier]: seriesData, 
+            [valuesIdentifier]: seriesValues
+        })
+    }
 
     createHeartRateSeriesData = () => {
-      const { currentYearData } = this.state;
-      const labels = currentYearData && Object.keys(currentYearData);
-      const values = currentYearData && Object.values(currentYearData);
+        /*const { currentYearData } = this.state;
+        const labels = currentYearData && Object.keys(currentYearData);
+        const values = currentYearData && Object.values(currentYearData);
 
-      const heartSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-        return `Week ${label}`;
-      });
+        const heartSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+            return `Week ${label}`;
+        });
 
-      const heartSeriesValues = values && values.length > 0 && values.map((value, index) => {
-        return value.average.heartRate;
-      });
+        const heartSeriesValues = values && values.length > 0 && values.map((value, index) => {
+            return value.average.heartRate;
+        });
 
-      const heartSeriesData = {
-        labels: heartSeriesLabels,
-        series: [ heartSeriesValues, ]
-      }
+        const heartSeriesData = {
+            labels: heartSeriesLabels,
+            series: [ heartSeriesValues, ]
+        }
 
-      console.log('Heart series data', heartSeriesData);
+        console.log('Heart series data', heartSeriesData);
 
-      this.setState({ heartSeriesData, heartSeriesValues })
+        this.setState({ heartSeriesData, heartSeriesValues })*/
+
+        const { currentYearData } = this.state;
+        this.generateChartData({
+            data: currentYearData,
+            labelPrefix: 'Week ',
+            identifier: 'heartRate',
+            labelsIdentifier: 'heartSeriesData',
+            valuesIdentifier: 'heartSeriesValues'
+        })
+
     }
 
     createBMISeriesData = () => {
-      const { currentYearData } = this.state;
-      const labels = currentYearData && Object.keys(currentYearData);
-      const values = currentYearData && Object.values(currentYearData);
+        /*const { currentYearData } = this.state;
+        const labels = currentYearData && Object.keys(currentYearData);
+        const values = currentYearData && Object.values(currentYearData);
 
-      const bmiSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-        return `${label}`;
-      });
+        const bmiSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+            return `${label}`;
+        });
 
-      const bmiSeriesValues = values && values.length > 0 && values.map((value, index) => {
-        return value.average.bmi;
-      });
+        const bmiSeriesValues = values && values.length > 0 && values.map((value, index) => {
+            return value.average.bmi;
+        });
 
-      const bmiSeriesData = {
-        labels: bmiSeriesLabels,
-        series: [ bmiSeriesValues, ]
-      }
+        const bmiSeriesData = {
+            labels: bmiSeriesLabels,
+            series: [ bmiSeriesValues, ]
+        }
 
-      console.log('bmi series data', bmiSeriesData);
+        console.log('bmi series data', bmiSeriesData);
 
-      this.setState({ bmiSeriesData, bmiSeriesValues })
+        this.setState({ bmiSeriesData, bmiSeriesValues })*/
+
+        const { currentYearData } = this.state;
+        this.generateChartData({
+            data: currentYearData,
+            identifier: 'bmi',
+            labelsIdentifier: 'bmiSeriesData',
+            valuesIdentifier: 'bmiSeriesValues'
+        })
     }
 
     createWaistCircumferenceSeriesData = () => {
-      const { currentYearData } = this.state;
-      const labels = currentYearData && Object.keys(currentYearData);
-      const values = currentYearData && Object.values(currentYearData);
+        /*const { currentYearData } = this.state;
+        const labels = currentYearData && Object.keys(currentYearData);
+        const values = currentYearData && Object.values(currentYearData);
 
-      const waistCircumferenceSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-        return `${label}`;
-      });
+        const waistCircumferenceSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+            return `${label}`;
+        });
 
-      const waistCircumferenceSeriesValues = values && values.length > 0 && values.map((value, index) => {
-        return value.average.waistCircumference;
-      });
+        const waistCircumferenceSeriesValues = values && values.length > 0 && values.map((value, index) => {
+            return value.average.waistCircumference;
+        });
 
-      const waistCircumferenceSeriesData = {
-        labels: waistCircumferenceSeriesLabels,
-        series: [ waistCircumferenceSeriesValues, ]
-      }
+        const waistCircumferenceSeriesData = {
+            labels: waistCircumferenceSeriesLabels,
+            series: [ waistCircumferenceSeriesValues, ]
+        }
 
-      console.log('Waist Circumference', waistCircumferenceSeriesData);
+        console.log('Waist Circumference', waistCircumferenceSeriesData);
 
-      this.setState({ waistCircumferenceSeriesData, waistCircumferenceSeriesValues })
+        this.setState({ waistCircumferenceSeriesData, waistCircumferenceSeriesValues })*/
+
+        const { currentYearData } = this.state;
+        this.generateChartData({
+            data: currentYearData,
+            identifier: 'waistCircumference',
+            labelsIdentifier: 'waistCircumferenceSeriesData',
+            valuesIdentifier: 'waistCircumferenceSeriesValues'
+        })
     }
 
     createWeightSeriesData = () => {
-      const { currentYearData } = this.state;
-      const labels = currentYearData && Object.keys(currentYearData);
-      const values = currentYearData && Object.values(currentYearData);
+        /*const { currentYearData } = this.state;
+        const labels = currentYearData && Object.keys(currentYearData);
+        const values = currentYearData && Object.values(currentYearData);
 
-      const weightSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-        return `${label}`;
-      });
+        const weightSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+            return `${label}`;
+        });
 
-      const weightSeriesValues = values && values.length > 0 && values.map((value, index) => {
-        return value.average.weight;
-      });
+        const weightSeriesValues = values && values.length > 0 && values.map((value, index) => {
+            return value.average.weight;
+        });
 
-      const weightSeriesData = {
-        labels: weightSeriesLabels,
-        series: [ weightSeriesValues, ]
-      }
+        const weightSeriesData = {
+            labels: weightSeriesLabels,
+            series: [ weightSeriesValues, ]
+        }
 
-      console.log('weight series data', weightSeriesData);
+        console.log('weight series data', weightSeriesData);
 
-      this.setState({ weightSeriesData, weightSeriesValues })
+        this.setState({ weightSeriesData, weightSeriesValues })*/
+
+        const { currentYearData } = this.state;
+        this.generateChartData({
+            data: currentYearData,
+            identifier: 'weight',
+            labelsIdentifier: 'weightSeriesData',
+            valuesIdentifier: 'weightSeriesValues'
+        })
     }
 
     createSBloodPressureSeriesData = () => {
-      const { currentYearData } = this.state;
-      const labels = currentYearData && Object.keys(currentYearData);
-      const values = currentYearData && Object.values(currentYearData);
+        /*const { currentYearData } = this.state;
+        const labels = currentYearData && Object.keys(currentYearData);
+        const values = currentYearData && Object.values(currentYearData);
 
-      const sBloodPressureSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-        return `${label}`;
-      });
+        const sBloodPressureSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+            return `${label}`;
+        });
 
-      const sBloodPressureSeriesValues = values && values.length > 0 && values.map((value, index) => {
-        return value.average.sBloodPressure;
-      });
+        const sBloodPressureSeriesValues = values && values.length > 0 && values.map((value, index) => {
+            return value.average.sBloodPressure;
+        });
 
-      const sBloodPressureSeriesData = {
-        labels: sBloodPressureSeriesLabels,
-        series: [ sBloodPressureSeriesValues, ]
-      }
+        const sBloodPressureSeriesData = {
+            labels: sBloodPressureSeriesLabels,
+            series: [ sBloodPressureSeriesValues, ]
+        }
 
-      console.log('sBloodPressure Series Data', sBloodPressureSeriesData);
+        console.log('sBloodPressure Series Data', sBloodPressureSeriesData);
 
-      this.setState({ sBloodPressureSeriesValues, sBloodPressureSeriesData })
+        this.setState({ sBloodPressureSeriesValues, sBloodPressureSeriesData })*/
+
+        const { currentYearData } = this.state;
+        this.generateChartData({
+            data: currentYearData,
+            identifier: 'sBloodPressure',
+            labelsIdentifier: 'sBloodPressureSeriesData',
+            valuesIdentifier: 'sBloodPressureSeriesValues'
+        })
     }
 
     createPhysicalActivitySeriesData = () => {
-      const {currentYearData} = this.state;
-      const labels = currentYearData && Object.keys(currentYearData);
-      const values = currentYearData && Object.values(currentYearData);
+        /*const {currentYearData} = this.state;
+        const labels = currentYearData && Object.keys(currentYearData);
+        const values = currentYearData && Object.values(currentYearData);
 
-      const physicalActivitySeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-        return `${label}`;
-      });
+        const physicalActivitySeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+            return `${label}`;
+        });
 
-      const physicalActivitySeriesValues = values && values.length > 0 && values.map((value, index) => {
-        return value.average.physicalActivity;
-      });
+        const physicalActivitySeriesValues = values && values.length > 0 && values.map((value, index) => {
+            return value.average.physicalActivity;
+        });
 
-      const physicalActivityData = {
-        labels: physicalActivitySeriesLabels,
-        values: [physicalActivitySeriesValues, ]
-      }
+        const physicalActivityData = {
+            labels: physicalActivitySeriesLabels,
+            values: [physicalActivitySeriesValues, ]
+        }*/
+
+        const { currentYearData } = this.state;
+        this.generateChartData({
+            data: currentYearData,
+            identifier: 'physicalActivity',
+            labelsIdentifier: 'physicalActivityData',
+            valuesIdentifier: 'physicalActivitySeriesValues'
+        })
     }
 
     createHeartSmartSeriesData = () => {
-      const { heartSmartRisk } = this.state;
-      const labels = heartSmartRisk && Object.keys(heartSmartRisk);
-      const values = heartSmartRisk && Object.values(heartSmartRisk);
+        const { heartSmartRisk } = this.state;
+        const labels = heartSmartRisk && Object.keys(heartSmartRisk);
+        const values = heartSmartRisk && Object.values(heartSmartRisk);
 
-      var { total, highRisk, lowRisk, midRisk } = heartSmartRisk;
-      var highRiskPercent = this.ConvertToDecimal( (highRisk / total) * 100 );
-      var midRiskPercent = this.ConvertToDecimal( (midRisk / total) * 100 );
-      var lowRiskPercent = this.ConvertToDecimal( (lowRisk / total) * 100 );
-      var heartSmartRiskSeriesData = {
-        labels: [`${lowRiskPercent}%`, `${midRiskPercent}%`, `${highRiskPercent}%`],
-        series: [lowRiskPercent, midRiskPercent, highRiskPercent]
-      };
+        var { total, highRisk, lowRisk, midRisk } = heartSmartRisk;
+        var highRiskPercent = this.ConvertToDecimal( (highRisk / total) * 100 );
+        var midRiskPercent = this.ConvertToDecimal( (midRisk / total) * 100 );
+        var lowRiskPercent = this.ConvertToDecimal( (lowRisk / total) * 100 );
+        var heartSmartRiskSeriesData = {
+            labels: [`${lowRiskPercent}%`, `${midRiskPercent}%`, `${highRiskPercent}%`],
+            series: [lowRiskPercent, midRiskPercent, highRiskPercent]
+        };
 
-      console.log('hs series data', heartSmartRiskSeriesData);
-      this.setState({ heartSmartRiskSeriesData, heartSmartRiskSeriesValues: values });
+        console.log('hs series data', heartSmartRiskSeriesData);
+        this.setState({ heartSmartRiskSeriesData, heartSmartRiskSeriesValues: values });
     }
 
     checkHeartRateScale = () => {
-      var heartSmartValue = this.state;
+        var heartSmartValue = this.state;
 
-      const { heartSmartRisk} = this.state;
-      const values = heartSmartRisk && Object.values(heartSmartRisk);
+        const { heartSmartRisk} = this.state;
+        const values = heartSmartRisk && Object.values(heartSmartRisk);
 
-      var {total, highRisk, lowRisk, midRisk } = heartSmartRisk;
-      var highRiskPercent = this.ConvertToDecimal((highRisk/total) * 100);
-      var midRiskPercent = this.ConvertToDecimal((midRisk/total) * 100);
-      var lowRiskPercent = this.ConvertToDecimal((lowRisk/total) * 100);
+        var {total, highRisk, lowRisk, midRisk } = heartSmartRisk;
+        var highRiskPercent = this.ConvertToDecimal((highRisk/total) * 100);
+        var midRiskPercent = this.ConvertToDecimal((midRisk/total) * 100);
+        var lowRiskPercent = this.ConvertToDecimal((lowRisk/total) * 100);
 
-      if (highRiskPercent >= midRiskPercent && highRisk >= lowRiskPercent) {
-          console.log('High Risk')
-          heartSmartValue = 'High Risk'
-          this.setState({heartSmartValue})
+        if (highRiskPercent >= midRiskPercent && highRisk >= lowRiskPercent) {
+            console.log('High Risk')
+            heartSmartValue = 'High Risk'
+            this.setState({heartSmartValue})
+            }
+        else if (midRiskPercent >= lowRiskPercent && midRiskPercent > highRiskPercent) {
+            heartSmartValue = 'Mid Risk'
+            this.setState({heartSmartValue})
+            }
+        else if (lowRiskPercent > midRiskPercent){
+            heartSmartValue = 'Low Risk'
+            this.setState({heartSmartValue})
         }
-      else if (midRiskPercent >= lowRiskPercent && midRiskPercent > highRiskPercent) {
-          heartSmartValue = 'Mid Risk'
-          this.setState({heartSmartValue})
-        }
-      else if (lowRiskPercent > midRiskPercent){
-        heartSmartValue = 'Low Risk'
-        this.setState({heartSmartValue})
-      }
 
     }
 

@@ -596,7 +596,7 @@ var responsivePhysAct = [
 ];
 
 var legendPhysAct = {
-  names: ["Physical Activity"],
+  names: ["Blood Pressure"],
   types: ["info"]
 };
 

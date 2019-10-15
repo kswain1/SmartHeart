@@ -62,8 +62,8 @@ class BiomechanicsForm extends Component {
 
 	componentDidMount(){
 		//this.DeleteDocumentsInWeeklyIntake();
-	  //this.InitializeWeeklyIntake();
-		this.GetAllWeeklyIntake();
+	  this.InitializeWeeklyIntake();
+		//this.GetAllWeeklyIntake();
 	}
 
 	/**

@@ -33,6 +33,7 @@ import Button from "components/CustomButton/CustomButton.jsx";
 import {withFirebase} from '../components/Firebase';
 
 import avatar from "assets/img/faces/face-3.jpg";
+import { initializeWeeklySummary } from "components/Firebase/helper";
 
 const initalState = {
 	name: '',
@@ -89,51 +90,7 @@ class BiomechanicsForm extends Component {
 	 * P.S: Only use this if you deleted the weeklyIntake collection.
 	 */
 	InitializeWeeklyIntake = () => {
-		this.props.firebase.weeklyIntakeSummary().set({
-			total: {
-				bmi: Number(0),
-				heartRate: Number(0),
-				weight: Number(0),
-				heartSmartScale: Number(0),
-				physicalActivity: Number(0),
-				sBloodPressure: Number(0),
-				dBloodPressure: Number(0),
-				waistCircumference: Number(0),
-
-			},
-			average: {
-				bmi: Number(0),
-				heartRate: Number(0),
-				weight: Number(0),
-				heartSmartScale: Number(0),
-				physicalActivity: Number(0),
-				sBloodPressure: Number(0),
-				dBloodPressure: Number(0),
-				waistCircumference: Number(0),
-			},
-			entryCount: {
-				bmi: Number(0),
-				heartRate: Number(0),
-				weight: Number(0),
-				heartSmartScale: Number(0),
-				physicalActivity: Number(0),
-				sBloodPressure: Number(0),
-				dBloodPressure: Number(0),
-				waistCircumference: Number(0),
-			},
-			heartSmartRisk: {
-				total: Number(0),
-				lowRisk: Number(0),
-				midRisk: Number(0),
-				highRisk: Number(0),
-				physicalActivity: Number(0),
-				sBloodPressure: Number(0),
-				dBloodPressure: Number(0),
-				waistCircumference: Number(0),
-
-			},
-			yearlyAverage: {}
-		}).then(res => {
+		this.props.firebase.weeklyIntakeSummary().set(initializeWeeklySummary()).then(res => {
 			console.log('res from initalize', res);
 		}).catch(err => {
             console.log("Error", err);

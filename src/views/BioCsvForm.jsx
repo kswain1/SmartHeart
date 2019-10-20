@@ -74,8 +74,10 @@ class BioCsv extends Component {
             //dataPromises returns a promise for each data. Run all promises.
             Promise.all(dataPromises).then(response => {
                 console.log("response", response);
+                alert('Upload completed!');
             }).catch(err => {
                 console.log("error", err);
+                alert('Upload failed!');
             });
         }
         return false;

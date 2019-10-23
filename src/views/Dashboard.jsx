@@ -43,38 +43,57 @@ import {withFirebase} from '../components/Firebase';
 
 class Dashboard extends Component {
 
-    state = {
-        averageBMI: 0,
-        averageHeartRate: 0,
-        averageWeight: 0,
-        averagePhysicalActivity: 0,
-        averageSBloodPressure: 0,
-        averageWaistCircumference: 0,
-        yearlyAverage: {},
-        loading: false,
-        currentyear: moment().year(),
-        heartSeriesData: {},
-        heartSeriesValues: [],
-        bmiSeriesData: {},
-        bmiSeriesValues: [],
-        weightSeriesData: {},
-        weightSeriesValues: [],
-        physicalActivitySeriesData: {},
-        physicalActivitySeriesValues: [],
-        waistCircumferenceSeriesData: {},
-        waistCircumferenceSeriesValues: [],
-        bloodPressureSeriesData: {},
-        bloodPressureSeriesValues: [],
-        sBloodPressureSeriesData: {},
-        sBloodPressureSeriesValues: [],
-        heartSmartRisk: null,
-        heartSmartRiskSeriesData: {},
-        heartSmartRiskSeriesValues: [],
-        heartSmartValue: '',
+    _isMounted = false;
+
+    constructor(props){
+      super(props);
+      this.state = {
+          currentUser: null,
+          averageBMI: 0,
+          averageHeartRate: 0,
+          averageWeight: 0,
+          averagePhysicalActivity: 0,
+          averageSBloodPressure: 0,
+          averageWaistCircumference: 0,
+          yearlyAverage: {},
+          loading: false,
+          currentyear: moment().year(),
+          heartSeriesData: {},
+          heartSeriesValues: [],
+          bmiSeriesData: {},
+          bmiSeriesValues: [],
+          weightSeriesData: {},
+          weightSeriesValues: [],
+          physicalActivitySeriesData: {},
+          physicalActivitySeriesValues: [],
+          waistCircumferenceSeriesData: {},
+          waistCircumferenceSeriesValues: [],
+          bloodPressureSeriesData: {},
+          bloodPressureSeriesValues: [],
+          sBloodPressureSeriesData: {},
+          sBloodPressureSeriesValues: [],
+          heartSmartRisk: null,
+          heartSmartRiskSeriesData: {},
+          heartSmartRiskSeriesValues: [],
+          heartSmartValue: '',
+      }
     }
 
     componentDidMount() {
+        this._isMounted = true;
+
         this.GetWeeklyIntakeSummary();
+        //this.setCurrentUser();
+    }
+
+    componentWillUnmount() {
+      this._isMounted = false;
+    }
+
+    setCurrentUser = () => {
+      if(this._isMounted){
+        return this.props.firebase.onAuthStateChanged(user => this.setState({ currentUser: user }))
+      }
     }
 
     createLegend(json) {
@@ -127,7 +146,7 @@ class Dashboard extends Component {
         }
       });
     }
-    
+
     //general function to create chart series data
     generateChartData = ({data, labelPrefix = '', identifier, labelsIdentifier, valuesIdentifier}) => {
         const labels = data && Object.keys(data);
@@ -148,34 +167,13 @@ class Dashboard extends Component {
 
         console.log(`${identifier} Series data === `, seriesData);
 
-        this.setState({ 
-            [labelsIdentifier]: seriesData, 
+        this.setState({
+            [labelsIdentifier]: seriesData,
             [valuesIdentifier]: seriesValues
         })
     }
 
     createHeartRateSeriesData = () => {
-        /*const { currentYearData } = this.state;
-        const labels = currentYearData && Object.keys(currentYearData);
-        const values = currentYearData && Object.values(currentYearData);
-
-        const heartSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-            return `Week ${label}`;
-        });
-
-        const heartSeriesValues = values && values.length > 0 && values.map((value, index) => {
-            return value.average.heartRate;
-        });
-
-        const heartSeriesData = {
-            labels: heartSeriesLabels,
-            series: [ heartSeriesValues, ]
-        }
-
-        console.log('Heart series data', heartSeriesData);
-
-        this.setState({ heartSeriesData, heartSeriesValues })*/
-
         const { currentYearData } = this.state;
         this.generateChartData({
             data: currentYearData,
@@ -188,27 +186,6 @@ class Dashboard extends Component {
     }
 
     createBMISeriesData = () => {
-        /*const { currentYearData } = this.state;
-        const labels = currentYearData && Object.keys(currentYearData);
-        const values = currentYearData && Object.values(currentYearData);
-
-        const bmiSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-            return `${label}`;
-        });
-
-        const bmiSeriesValues = values && values.length > 0 && values.map((value, index) => {
-            return value.average.bmi;
-        });
-
-        const bmiSeriesData = {
-            labels: bmiSeriesLabels,
-            series: [ bmiSeriesValues, ]
-        }
-
-        console.log('bmi series data', bmiSeriesData);
-
-        this.setState({ bmiSeriesData, bmiSeriesValues })*/
-
         const { currentYearData } = this.state;
         this.generateChartData({
             data: currentYearData,
@@ -219,26 +196,6 @@ class Dashboard extends Component {
     }
 
     createWaistCircumferenceSeriesData = () => {
-        /*const { currentYearData } = this.state;
-        const labels = currentYearData && Object.keys(currentYearData);
-        const values = currentYearData && Object.values(currentYearData);
-
-        const waistCircumferenceSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-            return `${label}`;
-        });
-
-        const waistCircumferenceSeriesValues = values && values.length > 0 && values.map((value, index) => {
-            return value.average.waistCircumference;
-        });
-
-        const waistCircumferenceSeriesData = {
-            labels: waistCircumferenceSeriesLabels,
-            series: [ waistCircumferenceSeriesValues, ]
-        }
-
-        console.log('Waist Circumference', waistCircumferenceSeriesData);
-
-        this.setState({ waistCircumferenceSeriesData, waistCircumferenceSeriesValues })*/
 
         const { currentYearData } = this.state;
         this.generateChartData({
@@ -250,27 +207,6 @@ class Dashboard extends Component {
     }
 
     createWeightSeriesData = () => {
-        /*const { currentYearData } = this.state;
-        const labels = currentYearData && Object.keys(currentYearData);
-        const values = currentYearData && Object.values(currentYearData);
-
-        const weightSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-            return `${label}`;
-        });
-
-        const weightSeriesValues = values && values.length > 0 && values.map((value, index) => {
-            return value.average.weight;
-        });
-
-        const weightSeriesData = {
-            labels: weightSeriesLabels,
-            series: [ weightSeriesValues, ]
-        }
-
-        console.log('weight series data', weightSeriesData);
-
-        this.setState({ weightSeriesData, weightSeriesValues })*/
-
         const { currentYearData } = this.state;
         this.generateChartData({
             data: currentYearData,
@@ -281,27 +217,6 @@ class Dashboard extends Component {
     }
 
     createSBloodPressureSeriesData = () => {
-        /*const { currentYearData } = this.state;
-        const labels = currentYearData && Object.keys(currentYearData);
-        const values = currentYearData && Object.values(currentYearData);
-
-        const sBloodPressureSeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-            return `${label}`;
-        });
-
-        const sBloodPressureSeriesValues = values && values.length > 0 && values.map((value, index) => {
-            return value.average.sBloodPressure;
-        });
-
-        const sBloodPressureSeriesData = {
-            labels: sBloodPressureSeriesLabels,
-            series: [ sBloodPressureSeriesValues, ]
-        }
-
-        console.log('sBloodPressure Series Data', sBloodPressureSeriesData);
-
-        this.setState({ sBloodPressureSeriesValues, sBloodPressureSeriesData })*/
-
         const { currentYearData } = this.state;
         this.generateChartData({
             data: currentYearData,
@@ -312,23 +227,6 @@ class Dashboard extends Component {
     }
 
     createPhysicalActivitySeriesData = () => {
-        /*const {currentYearData} = this.state;
-        const labels = currentYearData && Object.keys(currentYearData);
-        const values = currentYearData && Object.values(currentYearData);
-
-        const physicalActivitySeriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-            return `${label}`;
-        });
-
-        const physicalActivitySeriesValues = values && values.length > 0 && values.map((value, index) => {
-            return value.average.physicalActivity;
-        });
-
-        const physicalActivityData = {
-            labels: physicalActivitySeriesLabels,
-            values: [physicalActivitySeriesValues, ]
-        }*/
-
         const { currentYearData } = this.state;
         this.generateChartData({
             data: currentYearData,
@@ -392,8 +290,10 @@ class Dashboard extends Component {
             physicalActivitySeriesData, physicalActivitySeriesValues,
             waistCircumferenceSeriesData, waistCircumferenceSeriesLabels,
             sBloodPressureSeriesData,
-
+            currentUser
           } = this.state;
+
+          console.log("Current User === ", currentUser);
 
 
         return (

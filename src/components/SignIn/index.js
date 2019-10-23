@@ -34,14 +34,19 @@ class SignInFormBase extends Component {
   }
 
   onSubmit = event => {
+    const _this = this;
     const { email, password } = this.state;
     this.props.firebase
       .doSignInWithEmailAndPassword(email, password)
-      .then(() => {
-        this.setState({ ...initState });
-        this.props.history.push('/admin/dashboard');
+      .then((authUser) => {
+        localStorage.setItem('uid', authUser.user.uid);
+        localStorage.setItem('token', authUser.user.ra);
+
+        return _this.setState({loginSuccessful: true});
       })
       .catch(error => {
+        console.log("Error", error)
+        alert(error.message);
         this.setState({ error });
       });
 
@@ -84,8 +89,10 @@ class SignInFormBase extends Component {
       </div>
       <div className="loginbg">
         <div className="container">
+
           <form onSubmit={this.onSubmit} className="form-signin" role="form">
           <h2 className="form-signin-heading text-center">Sign In</h2>
+          {error && <p className="error-message">{error.message}</p>}
           <div className="input-field">
             <input
               name="email"
@@ -111,7 +118,7 @@ class SignInFormBase extends Component {
             <button onClick={this.handleGoogleLogin} className="btn btn-lg btn-primary btn-block btn-danger">
               Login With Google
             </button>
-            {error && <p>{error.message}</p>}
+            <SignUpURL/>
           </form>
         </div>
       </div>

@@ -32,12 +32,14 @@ class Firebase {
     weeklyIntake = () => this.db.collection('weeklyIntake');
     doSignInWithGoogle = () => this.auth.signInWithPopup(this.googleAuthProvider);
     doCreateUserWithEmailAndPassword = (email, password) => this.auth.createUserWithEmailAndPassword(email, password);
+    currentUser = () => this.auth.currentUser;
+    onAuthStateChanged = () => this.auth.onAuthStateChanged();
     doSignInWithEmailAndPassword = (email, password) => this.auth.signInWithEmailAndPassword(email, password);
     getUserDoc = (docName) => this.users().doc(docName);
     userBioCollection = (userDocName) => this.getUserDoc(userDocName).collection("biodata");
     weeklyIntakeSummary = () => this.weeklyIntake().doc("summary");
     weeklyIntakeSummaryData = () => this.weeklyIntake().doc("summary").collection("data");
-    
+
     createBioMechanicsData = (data) => {
         return new Promise((resolve, reject) => {
             var WeeklySummaryDoc = this.weeklyIntakeSummary();
@@ -54,7 +56,7 @@ class Firebase {
             let email = userProfile && userProfile.email;
             let docName = `${userName}-${dateCreated}`;
 
-            //check if email was passed. We need the 
+            //check if email was passed. We need the
             if(!email) return reject(`Please provide user's e-mail address`);
 
             // Create a reference for a new BMI, for use inside the transaction

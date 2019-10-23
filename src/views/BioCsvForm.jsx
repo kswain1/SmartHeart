@@ -28,9 +28,10 @@ class BioCsv extends Component {
                     bloodPressure = this.getBloodPressure(data[9]);
                     formdata = {
                         createdAt: data[4],
-                        name: {
+                        user: {
                             firstName: data[1],
                             lastname: data[2],
+                            email: data[26] || data[27],
                         },
                         dob: data[3],
                         weight: Number(!isNaN(data[5]) ? data[5] : 0),
@@ -63,7 +64,7 @@ class BioCsv extends Component {
                     formdata.heartSmartScale = heartSmartScale;
                     formdata.heartSmartRisk = heartSmartRisk;
 
-                    console.log("Form data", formdata);
+                    //console.log("Form data", formdata);
                     heartSmartData.push(formdata);
                 }
             });
@@ -74,8 +75,10 @@ class BioCsv extends Component {
             //dataPromises returns a promise for each data. Run all promises.
             Promise.all(dataPromises).then(response => {
                 console.log("response", response);
+                alert('Upload completed!');
             }).catch(err => {
                 console.log("error", err);
+                alert('Upload failed!');
             });
         }
         return false;

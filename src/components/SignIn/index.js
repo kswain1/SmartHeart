@@ -11,7 +11,8 @@ const initState = {
   email: '',
   password: '',
   error: null,
-  loginSuccessful: false
+  loginSuccessful: false,
+  isAdmin: false,
 };
 
 const SignInPage = () => (
@@ -28,7 +29,8 @@ class SignInFormBase extends Component {
   }
 
   componentDidMount(){
-    if (localStorage.getItem('uid')) {
+    console.log(" I am mounting the component")
+    if (localStorage.getItem('uid') && this.isAdmin) {
       return this.props.history.push('/admin/dashboard');
     }
   }
@@ -41,6 +43,18 @@ class SignInFormBase extends Component {
       .then((authUser) => {
         localStorage.setItem('uid', authUser.user.uid);
         localStorage.setItem('token', authUser.user.ra);
+        localStorage.setItem('email', authUser.user.email);
+        console.log('auth user', authUser.user)
+        // alert(authUser.user)
+
+
+        //check if user exists if user exists then they will be directed to user dashboard
+        let getUser = this.props.firebase.getUserDoc(email).get().then(userDoc => {
+            if(!userDoc.exists)
+             {
+               _this.setState({isAdmin : true})
+             };
+        });
 
         return _this.setState({loginSuccessful: true});
       })
@@ -63,19 +77,31 @@ class SignInFormBase extends Component {
       console.log('google sign ssuccess', res);
       localStorage.setItem('uid', res.user.uid);
       localStorage.setItem('token', res.credential.idToken);
+      localStorage.setItem('email', res.user.email);
       //this.props.history.push('/admin/dashboard');
-      return _this.setState({loginSuccessful: true});
+
+      //check if user exists if user exists then they will be directed to user dashboard
+      let getUser = this.props.firebase.getUserDoc(localStorage.getItem('email')).get().then(userDoc => {
+          if(!userDoc.exists)
+           {
+             _this.setState({isAdmin : true})
+           };
+      });
+      return _this.setState({loginSuccessful: true, isAdmin: true});
     }).catch(err => console.log('google errr login', err))
   }
 
   render() {
-    const { email, password, error, loginSuccessful } = this.state;
+    const { email, password, error, loginSuccessful, isAdmin } = this.state;
+
+    if(loginSuccessful && isAdmin) {
+      return window.location.href = '/admin/dashboard';
+    } else if (loginSuccessful) {
+      return window.location.href = 'user/dashboard'
+    }
 
     const isInvalid = password === '' || email === '';
 
-    if(loginSuccessful){
-      return window.location.href = '/admin/dashboard';
-    }
 
     return (
       <Fragment>

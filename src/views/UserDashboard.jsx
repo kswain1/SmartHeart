@@ -41,7 +41,7 @@ import {
 } from "variables/Variables.jsx";
 import {withFirebase} from '../components/Firebase';
 
-class Dashboard extends Component {
+class UserDashboard extends Component {
 
     _isMounted = false;
 
@@ -86,11 +86,8 @@ class Dashboard extends Component {
         // if acccessLevel === "user"
         // getuserdata
         // else { getWeeklyIntakeSummary}
-        this.props.firebase.getUserDoc(localStorage.getItem("email")).get().then(summary => {
-          console.log(summary)
-          console.log("summary data", summary.data)
-        });
-        this.GetWeeklyIntakeSummary();
+        this.GetUserData();
+      //  this.GetWeeklyIntakeSummary();
 
     }
 
@@ -118,6 +115,47 @@ class Dashboard extends Component {
     ConvertToDecimal = (value) => {
       return parseFloat(Math.round(value * 100) / 100).toFixed(2);
     }
+
+    GetUserData = () => {
+      const {currentyear} = this.state;
+
+      this.props.firebase.getUserDoc(localStorage.getItem("email")).get().then(summary => {
+        if (summary.exists){
+          var {average, yearlyAverage, heartSmartRisk} = summary.data().summary;
+          var currentYearData = yearlyAverage && yearlyAverage[currentyear];
+          console.log(yearlyAverage && yearlyAverage[currentyear])
+          this.setState({
+            yearlyAverage: yearlyAverage,
+            currentYearData: currentYearData,
+            heartSmartRisk: heartSmartRisk,
+            averageBMI: this.ConvertToDecimal(average.bmi),
+            averageWeight: this.ConvertToDecimal(average.weight),
+            averageHeartRate: this.ConvertToDecimal(average.heartRate),
+            averagePhysicalActivity: this.ConvertToDecimal(average.physicalActivity),
+            averageBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
+            averageWaistCircumference: this.ConvertToDecimal(average.waistCircumference),
+            averageSBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
+
+          }, () =>{
+            //computes data in form for graphs
+            this.createHeartRateSeriesData();
+            this.createBMISeriesData();
+            this.createWeightSeriesData();
+            this.createHeartSmartSeriesData();
+            this.createSBloodPressureSeriesData();
+            this.checkHeartRateScale();
+            this.createPhysicalActivitySeriesData();
+            this.createWaistCircumferenceSeriesData();
+          })
+          console.log("Summary average", average);
+        } else{
+          console.log("no such data document")
+        }
+
+      }).catch(error => {
+        console.log("error getting document:", error)
+      });
+      }
 
     /**
      * Get summary data from weeklyIntake collection
@@ -254,8 +292,8 @@ class Dashboard extends Component {
         var midRiskPercent = this.ConvertToDecimal( (midRisk / total) * 100 );
         var lowRiskPercent = this.ConvertToDecimal( (lowRisk / total) * 100 );
         var heartSmartRiskSeriesData = {
-          labels: [`${lowRiskPercent}%`, `${highRiskPercent}%`,`${midRiskPercent}%` ],
-          series: [lowRiskPercent, highRiskPercent, midRiskPercent ]
+            labels: [`${lowRiskPercent}%`, `${highRiskPercent}%`,`${midRiskPercent}%` ],
+            series: [lowRiskPercent, highRiskPercent, midRiskPercent ]
         };
 
         console.log('hs series data', heartSmartRiskSeriesData);
@@ -455,4 +493,4 @@ class Dashboard extends Component {
     }
 }
 
-export default withFirebase(Dashboard);
+export default withFirebase(UserDashboard);

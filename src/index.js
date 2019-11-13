@@ -29,10 +29,13 @@ import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
 
 import AdminLayout from "layouts/Admin.jsx";
+import UserLayout from "layouts/User.jsx";
 import GuestLayout from "layouts/Guest.jsx";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Firebase, {FirebaseContext} from './components/Firebase';
+
+var x = "hello";
 
 ReactDOM.render(
   <BrowserRouter>
@@ -40,7 +43,11 @@ ReactDOM.render(
     <Switch>
           <Route exact path="/" component={SignIn} />
           <Route path="/signup" component={SignUp} />
+          // if userType = admin
+
           <ProtectedRoute path="/admin" component={props => <AdminLayout {...props} />} />
+           // else if userType = user do the following
+          <ProtectedRoute path="/user" component={props => <UserLayout {...props} />} />
     </Switch>
     </FirebaseContext.Provider>
   </BrowserRouter>,

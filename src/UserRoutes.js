@@ -32,16 +32,9 @@ const dashboardRoutes = [
   {
     path: "/dashboard",
     name: "Dashboard",
-    icon: "pe-7s-graph",
-    component: Dashboard,
-    layout: "/admin"
-  },
-  {
-    path: "/user",
-    name: "Enrollment Form",
     icon: "pe-7s-user",
-    component: UserProfile,
-    layout: "/admin"
+    component: UserDashboard,
+    layout: "/user"
   },
   // {
   //   path: "/table",
@@ -55,37 +48,9 @@ const dashboardRoutes = [
     name: "Biomechanics Form",
     icon: "pe-7s-news-paper",
     component: BiomechanicsForm,
-    layout: "/admin"
+    layout: "/user"
   },
-  {
-    path: "/biocsv",
-    name: "Bio File Upload",
-    icon: "pe-7s-album",
-    component: BioCsv,
-    layout: "/admin"
-  },
-  // {
-  //   path: "/icons",
-  //   name: "Icons",
-  //   icon: "pe-7s-science",
-  //   component: Icons,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/notifications",
-  //   name: "Notifications",
-  //   icon: "pe-7s-bell",
-  //   component: Notifications,
-  //   layout: "/admin"
-  // },
-  // {
-  //   upgrade: true,
-  //   path: "/upgrade",
-  //   name: "Upgrade to PRO",
-  //   icon: "pe-7s-rocket",
-  //   component: Upgrade,
-  //   layout: "/admin"
-  // }
+
 ];
 
 export default dashboardRoutes;

@@ -1,3 +1,15 @@
+# Heart Smart DB Workflow
+- Delete Documents from Firebase
+In the /BiomechanicsForm page there are functions specifically for deleting documents inside of the weeklyIntake collection file. After deleting documents one has to initialize the next documents. 
+- Iniaitilizing documents
+Requires the user to also call the initialize functions inside of the biomechanicsform file. Once collection file is initialize then you can call the getweeklyIntake form. 
+- Starting Weekly Update
+In the bio csv forms when a user uploads here is where the get weekly intake is being called and populates the weekly collections. 
+
+Also during the weekly collection we are also creating a user collection to connect all of the users in the google document to the excel file.
+
+
+
 # [Light Bootstrap Dashboard React](https://demos.creative-tim.com/light-bootstrap-dashboard-react/#/?ref=lbdr-readme) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?url=https%3A%2F%2Fcreativetimofficial.github.io%2Flight-bootstrap-dashboard-react&text=Light%20Bootstrap%20Dashboard%20React%20-%20Free%20Bootstrap%20Admin%20Template&original_referer=https%3A%2F%2Fdemos.creative-tim.com%2Flight-bootstrap-dashboard-react%2F&via=creativetim&hashtags=react%2Cbootstrap%2Creact-bootstrap%2Ccreativetim%2Ccreative-tim)
 
 
@@ -28,9 +40,7 @@ It comes with 6 filter colors for the sidebar (`black`, `azure`,`green`,`orange`
 * [Useful Links](#useful-links)
 
 
-## Versions
 
-[<img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/html-logo.jpg" width="60" height="60" />](https://www.creative-tim.com/product/light-bootstrap-dashboard?ref=lbdr-readme)[<img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/react-logo.jpg" width="60" height="60" />](https://www.creative-tim.com/product/light-bootstrap-dashboard-react?ref=lbdr-readme)[<img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/vue-logo.jpg" width="60" height="60" />](https://www.creative-tim.com/product/vue-light-bootstrap-dashboard?ref=lbdr-readme)[<img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/angular-logo.jpg" width="60" height="60" />](https://www.creative-tim.com/product/light-bootstrap-dashboard-angular2?ref=lbdr-readme)
 
 
 | HTML | React | Vue | Angular |

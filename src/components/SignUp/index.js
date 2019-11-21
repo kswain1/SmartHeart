@@ -39,7 +39,7 @@ class SignUpFormBase extends Component {
       console.log('auth user', authUser);
       localStorage.setItem('uid', authUser.user.uid);
       localStorage.setItem('token', authUser.user.ra);
-
+      localStorage.setItem('email', authUser.user.email);
       let user = this.props.firebase.currentUser();
       console.log("User", user);
       //update user's data
@@ -75,7 +75,7 @@ class SignUpFormBase extends Component {
     const isValid = email && username && password === passwordConfirm;
 
     if(loginSuccessful){
-      return window.location.href = '/admin/dashboard';
+      return window.location.href = 'user/dashboard';
     }
 
     return (

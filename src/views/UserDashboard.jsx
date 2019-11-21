@@ -54,6 +54,7 @@ class UserDashboard extends Component {
           averageWeight: 0,
           averagePhysicalActivity: 0,
           averageSBloodPressure: 0,
+          averageDBloodPressure: 0,
           averageWaistCircumference: 0,
           yearlyAverage: {},
           loading: false,
@@ -68,8 +69,8 @@ class UserDashboard extends Component {
           physicalActivitySeriesValues: [],
           waistCircumferenceSeriesData: {},
           waistCircumferenceSeriesValues: [],
-          bloodPressureSeriesData: {},
-          bloodPressureSeriesValues: [],
+          dbloodPressureSeriesData: {},
+          dbloodPressureSeriesValues: [],
           sBloodPressureSeriesData: {},
           sBloodPressureSeriesValues: [],
           heartSmartRisk: null,
@@ -132,9 +133,10 @@ class UserDashboard extends Component {
             averageWeight: this.ConvertToDecimal(average.weight),
             averageHeartRate: this.ConvertToDecimal(average.heartRate),
             averagePhysicalActivity: this.ConvertToDecimal(average.physicalActivity),
-            averageBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
+            averageDBloodPressure: this.ConvertToDecimal(average.dBloodPressure),
             averageWaistCircumference: this.ConvertToDecimal(average.waistCircumference),
             averageSBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
+
 
           }, () =>{
             //computes data in form for graphs
@@ -143,9 +145,11 @@ class UserDashboard extends Component {
             this.createWeightSeriesData();
             this.createHeartSmartSeriesData();
             this.createSBloodPressureSeriesData();
+            this.createDBloodPressureSeriesData();
             this.checkHeartRateScale();
             this.createPhysicalActivitySeriesData();
             this.createWaistCircumferenceSeriesData();
+            this.createMapPressure();
           })
           console.log("Summary average", average);
         } else{
@@ -160,38 +164,38 @@ class UserDashboard extends Component {
     /**
      * Get summary data from weeklyIntake collection
      */
-    GetWeeklyIntakeSummary = () => {
-      const { currentyear } = this.state;
-      this.props.firebase.weeklyIntakeSummary().get().then(summary => {
-        if(summary && summary.id){
-          var { average, yearlyAverage, heartSmartRisk } = summary.data();
-          var currentYearData = yearlyAverage && yearlyAverage[currentyear];
-          this.setState({
-                yearlyAverage: yearlyAverage,
-                currentYearData: currentYearData,
-                heartSmartRisk: heartSmartRisk,
-                averageBMI: this.ConvertToDecimal(average.bmi),
-                averageWeight: this.ConvertToDecimal(average.weight),
-                averageHeartRate: this.ConvertToDecimal(average.heartRate),
-                averagePhysicalActivity: this.ConvertToDecimal(average.physicalActivity),
-                averageBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
-                averageWaistCircumference: this.ConvertToDecimal(average.waistCircumference),
-                averageSBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
-          }, () => {
-            //computes data in form for graphs
-            this.createHeartRateSeriesData();
-            this.createBMISeriesData();
-            this.createWeightSeriesData();
-            this.createHeartSmartSeriesData();
-            this.createSBloodPressureSeriesData();
-            this.checkHeartRateScale();
-            this.createPhysicalActivitySeriesData();
-            this.createWaistCircumferenceSeriesData();
-
-          })
-        }
-      });
-    }
+    // GetWeeklyIntakeSummary = () => {
+    //   const { currentyear } = this.state;
+    //   this.props.firebase.weeklyIntakeSummary().get().then(summary => {
+    //     if(summary && summary.id){
+    //       var { average, yearlyAverage, heartSmartRisk } = summary.data();
+    //       var currentYearData = yearlyAverage && yearlyAverage[currentyear];
+    //       this.setState({
+    //             yearlyAverage: yearlyAverage,
+    //             currentYearData: currentYearData,
+    //             heartSmartRisk: heartSmartRisk,
+    //             averageBMI: this.ConvertToDecimal(average.bmi),
+    //             averageWeight: this.ConvertToDecimal(average.weight),
+    //             averageHeartRate: this.ConvertToDecimal(average.heartRate),
+    //             averagePhysicalActivity: this.ConvertToDecimal(average.physicalActivity),
+    //             averageDBloodPressure: this.ConvertToDecimal(average.dBloodPressure),
+    //             averageWaistCircumference: this.ConvertToDecimal(average.waistCircumference),
+    //             averageSBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
+    //       }, () => {
+    //         //computes data in form for graphs
+    //         this.createHeartRateSeriesData();
+    //         this.createBMISeriesData();
+    //         this.createWeightSeriesData();
+    //         this.createHeartSmartSeriesData();
+    //         this.createSBloodPressureSeriesData();
+    //         this.checkHeartRateScale();
+    //         this.createPhysicalActivitySeriesData();
+    //         this.createWaistCircumferenceSeriesData();
+    //
+    //       })
+    //     }
+    //   });
+    // }
 
     //general function to create chart series data
     generateChartData = ({data, labelPrefix = '', identifier, labelsIdentifier, valuesIdentifier}) => {
@@ -272,6 +276,35 @@ class UserDashboard extends Component {
         })
     }
 
+    createDBloodPressureSeriesData = () => {
+      const {currentYearData} = this.state;
+      this.generateChartData({
+        data: currentYearData,
+        identifier: 'dBloodPressure',
+        labelsIdentifier: 'dBloodPressureData',
+        valuesIdentfier: 'dBloodPressureSeriesValues'
+      })
+    }
+
+    createMapPressure = () => {
+      const {currentYearData} = this.state;
+      const labels = currentYearData && Object.keys(currentYearData);
+      const values = currentYearData && Object.values(currentYearData);
+
+      const seriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+          return `${label}`;
+      });
+
+      const dBloodIdentifier = 'dBloodPressure';
+      const sBloodIdentifier = 'sBloodPressure';
+      const seriesValuesMap = values && values.length > 0 && values.map((value, index) => {
+          return (1/3 * value.average[dBloodIdentifier]) + (1/3 * value.average[sBloodIdentifier]);
+
+      });
+
+      console.log(`Map Pressure Map data === `, seriesValuesMap);
+    }
+
     createPhysicalActivitySeriesData = () => {
         const { currentYearData } = this.state;
         this.generateChartData({
@@ -332,7 +365,7 @@ class UserDashboard extends Component {
            heartSeriesData, heartSeriesValues, currentyear, bmiSeriesData,
             bmiSeriesValues, weightSeriesData, weightSeriesValues ,
             heartSmartRiskSeriesData, heartSmartRiskSeriesValues, heartSmartValue,
-            averagePhysicalActivity, averageBloodPressure, averageWaistCircumference,
+            averagePhysicalActivity, averageSBloodPressure, averageWaistCircumference,
             physicalActivitySeriesData, physicalActivitySeriesValues,
             waistCircumferenceSeriesData, waistCircumferenceSeriesLabels,
             sBloodPressureSeriesData,
@@ -362,7 +395,7 @@ class UserDashboard extends Component {
                             <StatsCard
                                 bigIcon={<i className="pe-7s-like text-warning" />}
                                 statsText="Avg. Blood Pressure"
-                                statsValue={averageBloodPressure}
+                                statsValue={averageSBloodPressure}
                                 statsIcon={<i className="fa fa-refresh" />}
                                 statsIconText="Updated now"
                             />

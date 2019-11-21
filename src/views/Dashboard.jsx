@@ -149,6 +149,7 @@ class Dashboard extends Component {
             this.checkHeartRateScale();
             this.createPhysicalActivitySeriesData();
             this.createWaistCircumferenceSeriesData();
+            this.createMapPressure();
 
           })
         }
@@ -232,6 +233,25 @@ class Dashboard extends Component {
             labelsIdentifier: 'sBloodPressureSeriesData',
             valuesIdentifier: 'sBloodPressureSeriesValues'
         })
+    }
+
+    createMapPressure = () => {
+      const {currentYearData} = this.state;
+      const labels = currentYearData && Object.keys(currentYearData);
+      const values = currentYearData && Object.values(currentYearData);
+
+      const seriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+          return `${label}`;
+      });
+
+      const dBloodIdentifier = 'dBloodPressure';
+      const sBloodIdentifier = 'sBloodPressure';
+      const seriesValuesMap = values && values.length > 0 && values.map((value, index) => {
+          return (1/3 * value.average[dBloodIdentifier]) + (1/3 * value.average[sBloodIdentifier]);
+
+      });
+
+      console.log(`Map Pressure Map data === `, seriesValuesMap);
     }
 
     createPhysicalActivitySeriesData = () => {

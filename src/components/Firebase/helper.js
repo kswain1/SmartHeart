@@ -82,7 +82,7 @@ export const initializeWeeklyAverage = () => (
 );
 
 export const generateWeeklySummaryData = (data, summaryData) => {
-    
+
     //get BMI and CreatedAt from data
     let BMI = Number(data.bmi);
     let HeartRate = Number(data.heartRate);
@@ -94,8 +94,8 @@ export const generateWeeklySummaryData = (data, summaryData) => {
     data.createdAt = moment(data.createdAt || new Date()).format('MM-DD-YYYY');
     let dateCreated = data.createdAt;
     let heartSmartRisk = data.heartSmartRisk;//lowRisk
-    
-    
+
+
     //get count of heartSmartRisk
     var heartSmartRiskData = summaryData.heartSmartRisk;
     var totalHeartSmartRiskData = heartSmartRiskData.total;
@@ -104,7 +104,9 @@ export const generateWeeklySummaryData = (data, summaryData) => {
 
     //get count entries
     var entryCounts = summaryData.entryCount;
+    // console.log("entry counts of all the values: ", entryCounts)
     var bmiEntryCount = entryCounts.bmi;
+    // console.log("weighEntryCount", weightEntryCount);
     var heartRateEntryCount = entryCounts.heartRate;
     var weightEntryCount = entryCounts.weight;
     var physicalActivityEntryCount = entryCounts.physicalActivity;
@@ -148,6 +150,7 @@ export const generateWeeklySummaryData = (data, summaryData) => {
     //update weekly count, weekly total, and weekly average for this week
     var weeklyTotal = weekAverageData.total;
     var weeklyCount = weekAverageData.count;
+    // console.log("Weekly Average Count Data", weeklyCount);
     var weeklyAverage = weekAverageData.average;
 
     var newWeeklyBMICount = weeklyCount.bmi + 1;
@@ -159,6 +162,7 @@ export const generateWeeklySummaryData = (data, summaryData) => {
     var newWeeklyHeartRateAvg = newWeeklyHeartRateTotal / newWeeklyHeartRateCount;
 
     var newWeeklyWeightCount = weeklyCount.weight + 1;
+    // console.log("weekly count for Weight Count", newWeeklyWeightCount)
     var newWeeklyWeightTotal = weeklyTotal.weight + Weight;
     var newWeeklyWeightAvg = newWeeklyWeightTotal / newWeeklyWeightCount;
 
@@ -167,6 +171,7 @@ export const generateWeeklySummaryData = (data, summaryData) => {
     var newWeeklyPhysicalActivityAvg = newWeeklyPhysicalActivityTotal / newWeeklyPhysicalActivityCount;
 
     var newWeeklySBloodPressureCount = weeklyCount.sBloodPressure + 1;
+    // console.log("weekly count for Sblood Pressure", newWeeklySBloodPressureCount)
     var newWeeklySBloodPressureTotal = weeklyTotal.sBloodPressure + SbloodPressure;
     var newWeeklySBloodPressureAvg = newWeeklySBloodPressureTotal / newWeeklySBloodPressureCount;
 
@@ -188,9 +193,9 @@ export const generateWeeklySummaryData = (data, summaryData) => {
                     heartRate: newWeeklyHeartRateCount,
                     weight: newWeeklyWeightCount,
                     physicalActivity: newWeeklyPhysicalActivityCount,
-                    sBloodPressure: newSBloodPressureCount,
-                    dBloodPressure: newDBloodPressureCount,
-                    waistCircumference: newWaistCircumferenceCount,
+                    sBloodPressure:  newWeeklySBloodPressureCount,
+                    dBloodPressure: newWeeklyDBloodPressureCount,
+                    waistCircumference: newWeeklyWaistCircumferenceCount,
                 },
                 average: {
                     bmi: newWeeklyBMIAvg,

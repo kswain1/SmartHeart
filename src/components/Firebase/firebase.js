@@ -23,6 +23,8 @@ class Firebase {
         this.db = app.firestore();
         this.auth = app.auth();
         this.googleAuthProvider = new app.auth.GoogleAuthProvider();
+        this.count = 0;
+        this.previousSummary = initializeWeeklySummary();
     }
 
     firestoreDB = () => this.db;
@@ -40,7 +42,9 @@ class Firebase {
     weeklyIntakeSummary = () => this.weeklyIntake().doc("summary");
     weeklyIntakeSummaryData = () => this.weeklyIntake().doc("summary").collection("data");
 
-    createBioMechanicsData = (data) => {
+
+    createBioMechanicsData = (data, dataIndex) => {
+
         return new Promise((resolve, reject) => {
             var WeeklySummaryDoc = this.weeklyIntakeSummary();
 
@@ -52,60 +56,63 @@ class Firebase {
                 lastName: (data.user && data.user.lastName) || '',
                 email: (data.user && data.user.email) || ''
             };
-            let userName = userProfile && (userProfile.firstName || userProfile.lastName);
-            let email = userProfile && userProfile.email;
+            let userName = userProfile.firstName || userProfile.lastName;
+            let email = userProfile.email;
             let docName = `${userName}-${dateCreated}`;
 
             //check if email was passed. We need the
-            if(!email) return reject(`Please provide user's e-mail address`);
+            if(!email) {
+              this.count += 1;
+              return reject(`Please provide user's e-mail address`);
+            }
 
             // Create a reference for a new BMI, for use inside the transaction
             let weeklyIntakeSummaryDocRef = this.weeklyIntakeSummaryData().doc(docName);
 
             //check if similar summary data document exists
-            weeklyIntakeSummaryDocRef.get().then(async(doc) => {
-                if(doc.exists) return reject('Similar document already exists');
+            return weeklyIntakeSummaryDocRef.get()
+            .then(async(doc) => {
+                if(doc.exists) {
+                  return Promise.reject('Similar document already exists');
+                } else {
 
-                //check if user exists
-                let getUser = await this.getUserDoc(email).get().then(userDoc => {
-                    if(userDoc.exists) return { exists: true, data: userDoc.data() };
-                    return { exists: false };
-                });
+                  weeklyIntakeSummaryDocRef.set({ ...data });
+                  //check if user exists
+                  let getUser = await this.getUserDoc(email).get().then(userDoc => ({ exists: userDoc.exists, data: userDoc.data() }));
 
-                console.log("User exists", getUser.exists, " email === ", email);
-                if(getUser.exists){
+                  // Update User or Set User Summary
+                  if(getUser.exists)
+                  {
                     //update the existing summary data
                     let userSummaryData = generateWeeklySummaryData(data, getUser.data.summary);
                     let updateUser = this.getUserDoc(email).update({ summary: userSummaryData });
-                } else {
+                  } else
+                  {
                     //create new user, then set the summary data
                     let freshWeeklySummary = initializeWeeklySummary();
                     let userSummaryData = generateWeeklySummaryData(data, freshWeeklySummary);
                     let createuser = this.getUserDoc(email).set({ ...userProfile, summary: userSummaryData });
+                  }
+                  //Set User data
+                  // console.log("bio data added", data.user.firstName);
+                  let addBioData = this.userBioCollection(email).doc(docName).set(data);
+
+                  return WeeklySummaryDoc.get()
+                  .then(result => {
+                    let WeeklySummaryDocData = result.data();
+                    if(dataIndex !== 0) {
+                      WeeklySummaryDocData = this.weeklySummaryDataResult;
+                    }
+                    this.weeklySummaryDataResult = generateWeeklySummaryData(data, WeeklySummaryDocData);
+                    WeeklySummaryDoc.set({ ...this.weeklySummaryDataResult })
+                    return resolve();
+                  })
+
                 }
-                //add biodata info to this user's collection
-                let addBioData = this.userBioCollection(email).doc(docName).set(data);
 
-
-                // In a transaction, add the new bmi and update the aggregate totals
-                return this.firestoreDB().runTransaction(transaction => {
-                    return transaction.get(WeeklySummaryDoc).then(res => {
-                        if (!res.exists) {
-                            return reject("Document does not exist!");
-                        }
-
-                        //generate weekly summary data
-                        let weeklySummaryData = generateWeeklySummaryData(data, res.data());
-                        transaction.update(WeeklySummaryDoc, weeklySummaryData);
-
-                        //Commit to Firestore, add new data to the weeklyIntakeSummary data
-                        transaction.set(weeklyIntakeSummaryDocRef, { ...data });
-
-                        return resolve();
-                    })
-                });
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
+            })
+            .catch(function(error) {
+                // console.log("Error getting document:", error);
                 return reject('Error getting document');
             });
         })

@@ -39,11 +39,7 @@ const initalState = {
 	name: '',
 	cholesterol: '',
 	physicalActivity: '',
-	bmi: '',
 	weight: '',
-	heartRate: '',
-	height: '',
-	bloodPressure: '',
 	smoking: '',
 	notes: '',
 	createdAt: moment().format(),
@@ -364,7 +360,18 @@ class WomensForm extends Component {
 		var formData = this.state;
 		formData['heartSmartScale'] = heartSmartScale;
 		formData['heartSmartRisk'] = heartSmartRisk;
-
+		//check if user exists
+		let getUser = await this.props.firebase.getUserDoc(localStorage.email).get().then(userDoc => {
+			console.log(userDoc.data().firstName);
+			console.log("user last name", userDoc.data().lastName);
+			console.log("user email", userDoc.data().email);
+			formData['firstName'] = userDoc.data().firstName;
+			formData['lastName'] = userDoc.data().lastName;
+			formData['email']= userDoc.data().email;
+			
+			// if(userDoc.exists) return { exists: true, data: userDoc.data() };
+			// return { exists: false };
+		});
 		this.setState(initalState, async () => {
 			//submit form data to firestore and update summary
 			/*const result = await CreateBioMechanicsData(formData);

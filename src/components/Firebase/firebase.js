@@ -49,15 +49,17 @@ class Firebase {
             var WeeklySummaryDoc = this.weeklyIntakeSummary();
 
             data.createdAt = moment(data.createdAt || new Date()).format('MM-DD-YYYY');
+            console.log(data.createdAt)
             let dateCreated = data.createdAt;
 
             let userProfile = {
-                firstName: (data.user && data.user.firstName) || '',
-                lastName: (data.user && data.user.lastName) || '',
-                email: (data.user && data.user.email) || ''
+                firstName: (data.user && data.user.firstName) || (data.firstName) || '',
+                lastName: (data.user && data.user.lastName) || (data.lastName) || '',
+                email: (data.user && data.user.email) || (data.email) || ''
             };
             let userName = userProfile.firstName || userProfile.lastName;
             let email = userProfile.email;
+            console.log("email address", email)
             let docName = `${userName}-${dateCreated}`;
 
             //check if email was passed. We need the

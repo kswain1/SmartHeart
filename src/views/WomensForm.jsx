@@ -39,7 +39,11 @@ const initalState = {
 	name: '',
 	cholesterol: '',
 	physicalActivity: '',
+	bmi: '',
 	weight: '',
+	heartRate: '',
+	height: '',
+	bloodPressure: '',
 	smoking: '',
 	notes: '',
 	createdAt: moment().format(),
@@ -367,7 +371,7 @@ class WomensForm extends Component {
 			console.log("user email", userDoc.data().email);
 			formData['firstName'] = userDoc.data().firstName;
 			formData['lastName'] = userDoc.data().lastName;
-			formData['email']= userDoc.data().email;
+			formData['email']= userDoc.data().email
 			
 			// if(userDoc.exists) return { exists: true, data: userDoc.data() };
 			// return { exists: false };

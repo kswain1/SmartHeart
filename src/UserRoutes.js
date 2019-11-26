@@ -23,7 +23,7 @@ import Typography from "views/Typography.jsx";
 import Icons from "views/Icons.jsx";
 import Maps from "views/Maps.jsx";
 import Notifications from "views/Notifications.jsx";
-import BiomechanicsForm from "views/BiomechanicsForm.jsx";
+import WomensForm from "views/WomensForm.jsx";
 import BioCsv from "views/BioCsvForm.jsx";
 import Upgrade from "views/Upgrade.jsx";
 import SignIn from "components/auth/SignIn.js"
@@ -45,9 +45,9 @@ const dashboardRoutes = [
   // },
   {
     path: "/biomechanics",
-    name: "Biomechanics Form",
+    name: "Women's Daily Log",
     icon: "pe-7s-news-paper",
-    component: BiomechanicsForm,
+    component: WomensForm,
     layout: "/user"
   },
 

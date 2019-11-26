@@ -28,7 +28,7 @@ import { style } from "variables/Variables.jsx";
 
 import routes from "UserRoutes.js";
 
-import image from "assets/img/sidebar-3.jpg";
+import image from "assets/img/sidebar-6.jpg";
 
 class UserLayout extends Component {
   constructor(props) {
@@ -36,7 +36,6 @@ class UserLayout extends Component {
     this.state = {
       _notificationSystem: null,
       image: image,
-      color: "orange",
       hasImage: true,
       fixedClasses: "dropdown show-dropdown open"
     };

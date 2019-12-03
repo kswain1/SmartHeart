@@ -43,13 +43,13 @@ const dashboardRoutes = [
   //   component: TableList,
   //   layout: "/admin"
   // },
-  {
-    path: "/biomechanics",
-    name: "Biomechanics Form",
-    icon: "pe-7s-news-paper",
-    component: BiomechanicsForm,
-    layout: "/user"
-  },
+  // {
+  //   path: "/biomechanics",
+  //   name: "Biomechanics Form",
+  //   icon: "pe-7s-news-paper",
+  //   component: BiomechanicsForm,
+  //   layout: "/user"
+  // },
 
 ];
 

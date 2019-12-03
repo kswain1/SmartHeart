@@ -19,7 +19,7 @@ import React, { Component } from "react";
 import moment from 'moment';
 import ChartistGraph from "react-chartist";
 import { Grid, Row, Col } from "react-bootstrap";
-
+import { average, createMapPressure } from "helper/functions.jsx"
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import { Tasks } from "components/Tasks/Tasks.jsx";
@@ -76,6 +76,8 @@ class Dashboard extends Component {
           heartSmartRiskSeriesData: {},
           heartSmartRiskSeriesValues: [],
           heartSmartValue: '',
+          mapValues: {},
+
       }
     }
 
@@ -128,6 +130,7 @@ class Dashboard extends Component {
         if(summary && summary.id){
           var { average, yearlyAverage, heartSmartRisk } = summary.data();
           var currentYearData = yearlyAverage && yearlyAverage[currentyear];
+          var mapsValue = createMapPressure(currentYearData);
           this.setState({
                 yearlyAverage: yearlyAverage,
                 currentYearData: currentYearData,
@@ -136,9 +139,10 @@ class Dashboard extends Component {
                 averageWeight: this.ConvertToDecimal(average.weight),
                 averageHeartRate: this.ConvertToDecimal(average.heartRate),
                 averagePhysicalActivity: this.ConvertToDecimal(average.physicalActivity),
-                averageBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
+                averageDBloodPressure: this.ConvertToDecimal(average.dBloodPressure),
                 averageWaistCircumference: this.ConvertToDecimal(average.waistCircumference),
                 averageSBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
+                mapValues: mapsValue,
           }, () => {
             //computes data in form for graphs
             this.createHeartRateSeriesData();
@@ -149,7 +153,6 @@ class Dashboard extends Component {
             this.checkHeartRateScale();
             this.createPhysicalActivitySeriesData();
             this.createWaistCircumferenceSeriesData();
-            this.createMapPressure();
 
           })
         }
@@ -235,25 +238,6 @@ class Dashboard extends Component {
         })
     }
 
-    createMapPressure = () => {
-      const {currentYearData} = this.state;
-      const labels = currentYearData && Object.keys(currentYearData);
-      const values = currentYearData && Object.values(currentYearData);
-
-      const seriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
-          return `${label}`;
-      });
-
-      const dBloodIdentifier = 'dBloodPressure';
-      const sBloodIdentifier = 'sBloodPressure';
-      const seriesValuesMap = values && values.length > 0 && values.map((value, index) => {
-          return (1/3 * value.average[dBloodIdentifier]) + (1/3 * value.average[sBloodIdentifier]);
-
-      });
-
-      console.log(`Map Pressure Map data === `, seriesValuesMap);
-    }
-
     createPhysicalActivitySeriesData = () => {
         const { currentYearData } = this.state;
         this.generateChartData({
@@ -278,7 +262,6 @@ class Dashboard extends Component {
           series: [lowRiskPercent, highRiskPercent, midRiskPercent ]
         };
 
-        console.log('hs series data', heartSmartRiskSeriesData);
         this.setState({ heartSmartRiskSeriesData, heartSmartRiskSeriesValues: values });
     }
 
@@ -317,11 +300,8 @@ class Dashboard extends Component {
             averagePhysicalActivity, averageBloodPressure, averageWaistCircumference,
             physicalActivitySeriesData, physicalActivitySeriesValues,
             waistCircumferenceSeriesData, waistCircumferenceSeriesLabels,
-            sBloodPressureSeriesData,
-            currentUser
+            sBloodPressureSeriesData, mapValues, mapValueSeriesData, mapValueAverage
           } = this.state;
-
-          console.log("Current User === ", currentUser);
 
 
         return (
@@ -343,8 +323,8 @@ class Dashboard extends Component {
                         <Col lg={3} sm={6}>
                             <StatsCard
                                 bigIcon={<i className="pe-7s-like text-warning" />}
-                                statsText="Avg. Blood Pressure"
-                                statsValue={averageBloodPressure}
+                                statsText="Avg. MAP Blood Pressure"
+                                statsValue={mapValues.mapAverage}
                                 statsIcon={<i className="fa fa-refresh" />}
                                 statsIconText="Updated now"
                             />
@@ -377,7 +357,6 @@ class Dashboard extends Component {
                                 id="chartHours"
                                 title="Physical Activity"
                                 category="12 week cohort performance"
-                                stats="Updated 3 minutes ago"
                                 content={
                                 <div className="ct-chart">
                                     <ChartistGraph
@@ -402,7 +381,6 @@ class Dashboard extends Component {
                                 statsIcon="fa fa-clock-o"
                                 title="Heart Smart Scale Chart"
                                 category="Last Phase Performance"
-                                stats="Phase sent 2 days ago"
                                 content={
                                 <div
                                     id="chartPreferences"
@@ -446,16 +424,15 @@ class Dashboard extends Component {
                       }
 
                         <Col md={6}>
-                          { bmiSeriesData && bmiSeriesValues && bmiSeriesValues.length > 0 &&
+                          { bmiSeriesData && mapValues  &&
                             <Card
-                                title="Blood Pressure Over Week"
+                                title="Map Blood Pressure Over Week"
                                 category="Cohort 1"
-                                stats="Updated 3 minutes ago"
                                 statsIcon="fa fa-history"
                                 content={
                                 <div className="ct-chart">
                                     <ChartistGraph
-                                        data={sBloodPressureSeriesData}
+                                        data={mapValues.mapValueSeriesData}
                                         type="Line"
                                         options={optionsPhysAct}
                                         responsiveOptions={responsivePhysAct}

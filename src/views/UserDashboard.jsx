@@ -19,6 +19,7 @@ import React, { Component } from "react";
 import moment from 'moment';
 import ChartistGraph from "react-chartist";
 import { Grid, Row, Col } from "react-bootstrap";
+import { average, createMapPressure } from "helper/functions.jsx"
 
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
@@ -77,6 +78,7 @@ class UserDashboard extends Component {
           heartSmartRiskSeriesData: {},
           heartSmartRiskSeriesValues: [],
           heartSmartValue: '',
+          mapValues: {},
       }
     }
 
@@ -124,6 +126,7 @@ class UserDashboard extends Component {
         if (summary.exists){
           var {average, yearlyAverage, heartSmartRisk} = summary.data().summary;
           var currentYearData = yearlyAverage && yearlyAverage[currentyear];
+          var mapValues = createMapPressure(currentYearData);
           console.log(yearlyAverage && yearlyAverage[currentyear])
           this.setState({
             yearlyAverage: yearlyAverage,
@@ -136,6 +139,7 @@ class UserDashboard extends Component {
             averageDBloodPressure: this.ConvertToDecimal(average.dBloodPressure),
             averageWaistCircumference: this.ConvertToDecimal(average.waistCircumference),
             averageSBloodPressure: this.ConvertToDecimal(average.sBloodPressure),
+            mapValues: mapValues,
 
 
           }, () =>{
@@ -150,6 +154,7 @@ class UserDashboard extends Component {
             this.createPhysicalActivitySeriesData();
             this.createWaistCircumferenceSeriesData();
             this.createMapPressure();
+
           })
           console.log("Summary average", average);
         } else{
@@ -215,7 +220,7 @@ class UserDashboard extends Component {
             series: [ seriesValues, ]
         }
 
-        console.log(`${identifier} Series data === `, seriesData);
+        // console.log(`${identifier} Series data === `, seriesData);
 
         this.setState({
             [labelsIdentifier]: seriesData,
@@ -299,10 +304,17 @@ class UserDashboard extends Component {
       const sBloodIdentifier = 'sBloodPressure';
       const seriesValuesMap = values && values.length > 0 && values.map((value, index) => {
           return (1/3 * value.average[dBloodIdentifier]) + (1/3 * value.average[sBloodIdentifier]);
-
       });
 
-      console.log(`Map Pressure Map data === `, seriesValuesMap);
+      const SeriesData = {
+          labels: seriesLabels,
+          series: [ seriesValuesMap, ]
+      }
+
+      const mapAverage = average(seriesValuesMap);
+
+
+      console.log(`Map Pressure Map data === `, seriesValuesMap, mapAverage);
     }
 
     createPhysicalActivitySeriesData = () => {
@@ -368,16 +380,15 @@ class UserDashboard extends Component {
             averagePhysicalActivity, averageSBloodPressure, averageWaistCircumference,
             physicalActivitySeriesData, physicalActivitySeriesValues,
             waistCircumferenceSeriesData, waistCircumferenceSeriesLabels,
-            sBloodPressureSeriesData,
-            currentUser
+            sBloodPressureSeriesData, mapValues
           } = this.state;
-
-          console.log("Current User === ", currentUser);
 
 
         return (
+
             <div className="content">
                 <Grid fluid>
+
                     <Row>
                     {
                       heartSmartRiskSeriesData && heartSmartRiskSeriesValues && heartSmartRiskSeriesValues.length > 0 &&
@@ -391,11 +402,12 @@ class UserDashboard extends Component {
                           />
                       </Col>
                     }
+
                         <Col lg={3} sm={6}>
                             <StatsCard
                                 bigIcon={<i className="pe-7s-like text-warning" />}
-                                statsText="Avg. Blood Pressure"
-                                statsValue={averageSBloodPressure}
+                                statsText="Avg. Map Blood Pressure"
+                                statsValue={mapValues.mapAverage}
                                 statsIcon={<i className="fa fa-refresh" />}
                                 statsIconText="Updated now"
                             />
@@ -453,7 +465,6 @@ class UserDashboard extends Component {
                                 statsIcon="fa fa-clock-o"
                                 title="Heart Smart Scale Chart"
                                 category="Last Phase Performance"
-                                stats="Phase sent 2 days ago"
                                 content={
                                 <div
                                     id="chartPreferences"
@@ -477,7 +488,6 @@ class UserDashboard extends Component {
                                 id="weightActivity"
                                 title="Waist Circumference"
                                 category="Collective information from Cohort 1"
-                                stats="Data information certified"
                                 statsIcon="fa fa-check"
                                 content={
                                 <div className="ct-chart">
@@ -497,17 +507,17 @@ class UserDashboard extends Component {
                       }
 
                         <Col md={6}>
-                          { bmiSeriesData && bmiSeriesValues && bmiSeriesValues.length > 0 &&
+                          { bmiSeriesData && mapValues &&
+
                             <Card
-                                title="Blood Pressure Over Week"
+                                title="Weekly Map Blood Pressure"
                                 category="Cohort 1"
-                                stats="Updated 3 minutes ago"
                                 statsIcon="fa fa-history"
                                 content={
                                 <div className="ct-chart">
                                     <ChartistGraph
-                                        data={sBloodPressureSeriesData}
-                                        type="Line"
+                                        data={mapValues.mapValueSeriesData}
+                                        type="Bar"
                                         options={optionsPhysAct}
                                         responsiveOptions={responsivePhysAct}
                                     />

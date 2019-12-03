@@ -22,3 +22,33 @@ export const generateHeartSmartScale = (data) => {
   var sum = points.reduce((a, b) => a + b);
   return sum;
 }
+
+export const average = (mapValuesList) => {
+	return mapValuesList.reduce(function (previous,sum)
+	{ return previous + sum}, 0) / mapValuesList.length;
+}
+
+export const createMapPressure = (currentYearData) => {
+	// const {currentYearData} = this.state;
+	const labels = currentYearData && Object.keys(currentYearData);
+	const values = currentYearData && Object.values(currentYearData);
+
+	const seriesLabels = labels && labels.length > 0 && labels.map((label, index) => {
+			return `${label}`;
+	});
+
+	const dBloodIdentifier = 'dBloodPressure';
+	const sBloodIdentifier = 'sBloodPressure';
+	const seriesValues = values && values.length > 0 && values.map((value, index) => {
+			return (1/3 * value.average[dBloodIdentifier]) + (1/3 * value.average[sBloodIdentifier]);
+
+	});
+	const mapValueSeriesData = {
+		labels: labels,
+		series: [seriesValues, ] 
+	}
+	const mapAverage = average(seriesValues).toFixed(2);
+
+	console.log(`Map Pressure Map data === `, seriesValues, mapValueSeriesData, mapAverage);
+	return {mapValueSeriesData, seriesValues, mapAverage }
+}
